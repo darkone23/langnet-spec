@@ -1,14 +1,13 @@
 [project]
 name = "langnet-spec"
 version = "0.1.0"
-description = "Add your description here"
+description = "python protobuf gencode"
 readme = "README.md"
 requires-python = ">=3.13"
 dependencies = [
-    "protobuf>=6.33.5",
     "betterproto2-compiler>=0.3.0",
-    "ruff",
     "betterproto>=1.2.5",
+    "ruff", # explicit so we pick up our static shim
 ]
 
 [tool.uv.sources]

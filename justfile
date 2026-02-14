@@ -20,9 +20,15 @@ generate-python:
         --python_betterproto2_out=generated/python \
         --proto_path=schema \
         schema/*.proto
-    # Fix relative imports in generated code
-    find generated/python -name "*.py" -exec sed -i 's/from \.\.message_pool import default_message_pool/from message_pool import default_message_pool/g' {} \;
+    just fixup-python
     @echo "✓ BetterProto2 code generated in generated/python/"
+
+# Fixup generated python code: (better betterproto)
+fixup-python:
+    rm -f generated/python/__init__.py generated/python/message_pool.py 2>/dev/null || true
+    find generated/python -name "*.py" -exec \
+        sed -i 's/from \.\.message_pool import default_message_pool/default_message_pool = betterproto2.MessagePool()/g' {} \;
+    @echo "✓ Python code fixup completed"
    
 # Build zig-protobuf plugin
 build-plugin:

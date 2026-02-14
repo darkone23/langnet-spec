@@ -160,7 +160,7 @@ pub fn main() !void {
 }
 ```
 
-**Note:** This project uses Zig 0.15.x with "writergate" I/O changes. See `ZIG_0.15_NOTES.md` for detailed migration guidance from older Zig versions.
+**Note:** This project uses Zig 0.15.x
 
 ## Adding New Schema Definitions
 
@@ -190,9 +190,6 @@ This repository includes examples and tests for cross-language interoperability:
 # Test full cross-language workflow: Python writes, Zig reads, Zig writes
 just test-cross-lang
 
-# Test basic cross-language workflow
-just test-cross-lang
-
 # Run just Python serialization test
 just test-python
 
@@ -204,15 +201,13 @@ just test-zig-compile
 
 The `examples/` directory contains working examples:
 
-1. **Python writes (betterproto2)**: `python_writer_betterproto2.py` creates binary and JSON files using modern dataclasses
-2. **Legacy Python writer**: `python_writer.py` (deprecated, uses standard protobuf)
-3. **Zig reads**: `zig_reader.zig` reads Python-generated files, creates new binary
-4. **Cross-verification**: Python can read Zig-generated files and vice versa
+1. **Python writes**: `python_writer.py` creates binary and JSON files using modern dataclasses
+2. **Zig reads**: `zig_reader.zig` reads Python-generated files, creates new binary
 
 ```bash
 # Generate all code and run examples
 just generate-all
-python examples/python_writer_betterproto2.py
+python examples/python_writer.py
 zig build reader
 zig-out/bin/zig_reader
 ```
@@ -238,12 +233,7 @@ Recommended CI steps:
 ### Required Tools
 - `protoc` (Protocol Buffer compiler) - installed via Nix
 - `zig` (0.15.0 or later) - for Zig code generation
-- `python` (3.8+ with `protobuf` package)
-
-### Python Dependencies
-```bash
-pip install protobuf
-```
+- `python` (3.8+ with `betterproto2` package)
 
 ## Troubleshooting
 
@@ -253,7 +243,7 @@ pip install protobuf
 
 **Python import errors**: Add `langnet-spec/generated/python` to your Python path.
 
- **Zig compilation errors**: Ensure you have the `zig-protobuf` dependency properly set up in your Zig project. Note that this project uses Zig 0.15.x with "writergate" I/O changes - see `ZIG_0.15_NOTES.md` for migration guidance. Note that this project uses Zig 0.15.x with "writergate" I/O changes - see `ZIG_0.15_NOTES.md` for migration guidance.
+**Zig compilation errors**: Ensure you have the `zig-protobuf` dependency properly set up in your Zig project.
 
 **Submodule not initialized**: Run `git submodule update --init --recursive`.
 

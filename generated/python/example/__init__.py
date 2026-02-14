@@ -9,7 +9,7 @@ from dataclasses import dataclass
 
 import betterproto2
 
-from message_pool import default_message_pool
+default_message_pool = betterproto2.MessagePool()
 
 _COMPILER_VERSION = "0.9.0"
 betterproto2.check_compiler_version(_COMPILER_VERSION)
