@@ -1,0 +1,13 @@
+[project]
+name = "ruff"
+version = "0.9.10"            # set this to what betterproto2-compiler requires
+description = "Shim that delegates to system ruff"
+requires-python = ">=3.8"
+
+[project.scripts]
+ruff = "ruff_shim:main"
+
+[build-system]
+requires = ["setuptools"]
+build-backend = "setuptools.build_meta"
+

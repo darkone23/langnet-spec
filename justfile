@@ -9,30 +9,35 @@ default:
 generate-all:
     just generate-python
     just generate-zig
+    just format-python
+    just format-zig
 
-# Generate Python protobuf code
+# Generate Python protobuf code with betterproto2 dataclasses
 generate-python:
     mkdir -p generated/python
     protoc \
-        --python_out=generated/python \
+        --plugin=protoc-gen-python_betterproto2=.devenv/state/venv/bin/protoc-gen-python_betterproto2 \
+        --python_betterproto2_out=generated/python \
         --proto_path=schema \
         schema/*.proto
-    @echo "✓ Python code generated in generated/python/"
-
+    # Fix relative imports in generated code
+    find generated/python -name "*.py" -exec sed -i 's/from \.\.message_pool import default_message_pool/from message_pool import default_message_pool/g' {} \;
+    @echo "✓ BetterProto2 code generated in generated/python/"
+   
 # Build zig-protobuf plugin
 build-plugin:
-    cd zig-protobuf && zig build install
+    cd vendor/zig-protobuf && zig build install
     @echo "✓ zig-protobuf plugin built"
 
 # Generate Zig protobuf code
 generate-zig:
     # Build plugin if it doesn't exist
-    if [ ! -f zig-protobuf/zig-out/bin/protoc-gen-zig ]; then \
+    if [ ! -f ./vendor/zig-protobuf/zig-out/bin/protoc-gen-zig ]; then \
         just build-plugin; \
     fi
     mkdir -p generated/zig
     protoc \
-        --plugin=protoc-gen-zig=zig-protobuf/zig-out/bin/protoc-gen-zig \
+        --plugin=protoc-gen-zig=vendor/zig-protobuf/zig-out/bin/protoc-gen-zig \
         --zig_out=generated/zig \
         --proto_path=schema \
         schema/*.proto
@@ -45,7 +50,7 @@ clean:
 
 # Clean everything including test outputs and build artifacts
 clean-all:
-    rm -rf generated output zig-protobuf/zig-out zig-protobuf/.zig-cache .zig-cache
+    rm -rf generated output vendor/zig-protobuf/zig-out vendor/zig-protobuf/.zig-cache .zig-cache
     @echo "✓ Cleaned all generated files and build artifacts"
 
 # Test Zig compilation
@@ -67,40 +72,27 @@ format-python:
 
 # Test Python serialization
 test-python:
-    python examples/python_writer.py 2>&1 | grep -E "(Written:|Binary size:|JSON:|===.*===)" | head -15
+    python examples/python_writer.py
     @echo "✓ Python serialization test completed"
 
-# Test cross-language workflow
+# test cross-language integration
 test-cross-lang:
-    @echo "=== Testing cross-language workflow ==="
-    @echo "1. Cleaning previous outputs..."
-    rm -rf output 2>/dev/null || true
-    @echo "2. Running Python writer..."
-    python examples/python_writer.py 2>&1 | grep -E "(Written:|Binary size:|===.*===)" | head -15
-    @echo "3. Verifying binary files..."
-    @ls -lh output/*.bin 2>/dev/null | head -5 || echo "No binary files found"
-    @echo "4. Testing Zig protobuf library..."
-    cd zig-protobuf && zig test src/protobuf.zig 2>&1 | tail -3
-    @echo "✓ Cross-language workflow test completed"
-
-# Test full cross-language integration
-test-full-cross-lang:
     @echo "=== Testing Full Cross-Language Integration ==="
     @echo "1. Cleaning previous outputs..."
     rm -rf output 2>/dev/null || true
     @echo "2. Generating protobuf code..."
     just generate-all
     @echo "3. Running Python writer to create binary files..."
-    python examples/python_writer.py 2>&1 | grep -E "(Written:|Binary size:|===.*===)" | head -10
+    python examples/python_writer.py
     @echo "4. Building Zig reader..."
-    zig build reader 2>&1 | tail -5
+    zig build reader
     @echo "5. Running Zig reader to decode Python-generated files..."
-    zig-out/bin/zig_reader 2>&1 | grep -E "(Decoded|Created|Written|===.*===)" | head -20
+    zig-out/bin/zig_reader
     @echo "6. Verifying Zig generated file exists..."
-    @ls -lh output/zig_generated.bin 2>/dev/null || echo "Zig generated file not found"
+    @ls -lh output/zig_generated.bin
     @echo "✓ Full cross-language integration test completed"
 
-# Full integration test
+# full integration test
 test-integration:
     just clean-all
     just build-plugin

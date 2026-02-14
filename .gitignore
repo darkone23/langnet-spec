@@ -10,7 +10,7 @@ devenv.local.yaml
 # pre-commit
 .pre-commit-config.yaml
 
-zig-protobuf
+# zig things
 .zig-cache/
 zig-out/
 
@@ -20,3 +20,4 @@ output/
 # py artifacts
 __pycache__
 *.pyc
+vendor/*

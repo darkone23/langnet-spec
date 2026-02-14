@@ -13,3 +13,17 @@ inputs:
 # If you have more than one devenv you can merge them
 #imports:
 # - ./backend
+
+packages:
+  - protobuf
+  - zig
+  - ruff
+  - python313
+
+languages:
+  python:
+    enable: true
+    package: pkgs.python313
+    uv:
+      enable: true
+      package: pkgs.uv

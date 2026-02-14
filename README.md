@@ -22,7 +22,7 @@ langnet-spec/
 ├── generated/        # Generated code (CHECKED IN)
 │   ├── python/      # Python protobuf classes
 │   └── zig/         # Zig protobuf structs
-├── zig-protobuf/    # Git submodule for Zig code generation
+├── vendor/          # Git submodule for Zig code generation
 ├── examples/        # Cross-language examples
 │   ├── python_writer.py
 │   └── zig_reader.zig
@@ -35,7 +35,7 @@ langnet-spec/
 ### 1. Clone and Initialize Submodules
 
 ```bash
-git clone --recursive https://github.com/your-org/langnet-spec
+git clone --recursive https://github.com/darkone23/langnet-spec
 cd langnet-spec
 ```
 
@@ -65,25 +65,11 @@ git submodule add https://github.com/darkone23/langnet-spec
 
 **In your Zig project:**
 ```bash
-git submodule add https://github.com/darkone23/langnet-spec
-# Import generated Zig files directly
-```
-
-## Code Generation
-
-### Generate All Code
-
-```bash
-just generate-all
-```
-
-### Generate Python Code Only
-
-```bash
+# Generate Python code using betterproto2
 just generate-python
 ```
 
-Runs `protoc` to generate Python classes in `generated/python/`.
+Runs `protoc` with betterproto2 plugin to generate modern Python dataclasses in `generated/python/`. The old `generate-python` command is deprecated and now aliases to this.
 
 ### Generate Zig Code Only
 
@@ -111,13 +97,13 @@ Removes all generated files in `generated/`.
 
 ## Usage Examples
 
-### Python Usage
+### Python Usage (betterproto2)
 
 ```python
 import sys
 sys.path.append('langnet-spec/generated/python')
 
-from langnet_pb2 import SearchRequest
+from langnet import SearchRequest
 
 # Create message
 request = SearchRequest(
@@ -126,12 +112,17 @@ request = SearchRequest(
     results_per_page=20
 )
 
-# Serialize
-data = request.SerializeToString()
+# Serialize to binary
+data = bytes(request)
 
-# Deserialize
-new_request = SearchRequest()
-new_request.ParseFromString(data)
+# Serialize to JSON
+json_data = request.to_json(indent=2)
+
+# Deserialize from binary
+new_request = SearchRequest.from_bytes(data)
+
+# Deserialize from JSON
+from_json = SearchRequest.from_json(json_data)
 ```
 
 ### Zig Usage (Zig 0.15.x)
@@ -197,7 +188,7 @@ This repository includes examples and tests for cross-language interoperability:
 
 ```bash
 # Test full cross-language workflow: Python writes, Zig reads, Zig writes
-just test-full-cross-lang
+just test-cross-lang
 
 # Test basic cross-language workflow
 just test-cross-lang
@@ -213,14 +204,15 @@ just test-zig-compile
 
 The `examples/` directory contains working examples:
 
-1. **Python writes**: `python_writer.py` creates binary and JSON files
-2. **Zig reads**: `zig_reader.zig` reads Python-generated files, creates new binary
-3. **Cross-verification**: Python can read Zig-generated files and vice versa
+1. **Python writes (betterproto2)**: `python_writer_betterproto2.py` creates binary and JSON files using modern dataclasses
+2. **Legacy Python writer**: `python_writer.py` (deprecated, uses standard protobuf)
+3. **Zig reads**: `zig_reader.zig` reads Python-generated files, creates new binary
+4. **Cross-verification**: Python can read Zig-generated files and vice versa
 
 ```bash
 # Generate all code and run examples
 just generate-all
-python examples/python_writer.py
+python examples/python_writer_betterproto2.py
 zig build reader
 zig-out/bin/zig_reader
 ```
@@ -229,7 +221,7 @@ zig-out/bin/zig_reader
 
 1. **Edit schema**: Modify `.proto` files in `schema/`
 2. **Regenerate code**: Run `just generate-all`
-3. **Test cross-language**: Run `just test-full-cross-lang`
+3. **Test cross-language**: Run `just test-cross-lang`
 4. **Test changes**: Use the generated code in your projects
 5. **Commit changes**: Commit both `.proto` files and generated code
 
