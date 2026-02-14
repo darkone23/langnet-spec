@@ -1,0 +1,101 @@
+syntax = "proto3";
+package langnet;
+
+// SearchRequest represents a search query with pagination
+message SearchRequest {
+  string query = 1;
+  int32 page_number = 2;
+  int32 results_per_page = 3;
+}
+
+// SearchResponse contains search results
+message SearchResponse {
+  repeated Result results = 1;
+  int32 total_results = 2;
+  int32 page_number = 3;
+  
+  message Result {
+    string id = 1;
+    string title = 2;
+    string url = 3;
+    string snippet = 4;
+    map<string, string> metadata = 5;
+  }
+}
+
+// User data structure
+message User {
+  string id = 1;
+  string username = 2;
+  string email = 3;
+  repeated string roles = 4;
+  map<string, string> preferences = 5;
+  Timestamp created_at = 6;
+  Timestamp updated_at = 7;
+}
+
+// Timestamp for cross-language compatibility
+message Timestamp {
+  int64 seconds = 1;
+  int32 nanos = 2;
+}
+
+// Error response for API calls
+message Error {
+  string code = 1;
+  string message = 2;
+  map<string, string> details = 3;
+  Timestamp timestamp = 4;
+}
+
+// API request wrapper
+message ApiRequest {
+  oneof payload {
+    SearchRequest search = 1;
+    User user = 2;
+  }
+  string request_id = 3;
+  Timestamp sent_at = 4;
+}
+
+// API response wrapper
+message ApiResponse {
+  oneof payload {
+    SearchResponse search_response = 1;
+    User user_response = 2;
+    Error error = 3;
+  }
+  string request_id = 4;
+  Timestamp received_at = 5;
+}
+
+// Configuration settings
+message Config {
+  map<string, string> settings = 1;
+  repeated string enabled_features = 2;
+  Timestamp last_updated = 3;
+}
+
+// Batch operation for multiple items
+message Batch {
+  repeated SearchRequest searches = 1;
+  repeated User users = 2;
+  string batch_id = 3;
+}
+
+// Event for tracking system activities
+message Event {
+  enum EventType {
+    SEARCH = 0;
+    USER_CREATED = 1;
+    USER_UPDATED = 2;
+    ERROR = 3;
+    CONFIG_CHANGED = 4;
+  }
+  
+  EventType type = 1;
+  string id = 2;
+  map<string, string> data = 3;
+  Timestamp occurred_at = 4;
+  string source = 5;
+}

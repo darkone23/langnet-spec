@@ -1,0 +1,22 @@
+# Devenv
+#
+.devenv*
+devenv.local.nix
+devenv.local.yaml
+
+# direnv
+.direnv
+
+# pre-commit
+.pre-commit-config.yaml
+
+zig-protobuf
+.zig-cache/
+zig-out/
+
+# test output
+output/
+
+# py artifacts
+__pycache__
+*.pyc
