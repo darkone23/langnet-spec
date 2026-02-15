@@ -8,97 +8,106 @@ pub fn main() !void {
 
     std.debug.print("=== Zig Reader Example ===\n\n", .{});
 
-    // 1. Read and decode SearchRequest from binary file
-    std.debug.print("1. Reading SearchRequest from binary file...\n", .{});
-    const search_request_data = try std.fs.cwd().readFileAlloc(allocator, "output/search_request.bin", 1024);
-    defer allocator.free(search_request_data);
+    // 1. Read and decode QueryResponse from binary file
+    std.debug.print("1. Reading QueryResponse from binary file...\n", .{});
+    const query_response_data = try std.fs.cwd().readFileAlloc(allocator, "output/query_response.bin", 4096);
+    defer allocator.free(query_response_data);
 
-    var reader: std.Io.Reader = .fixed(search_request_data);
-    var search_request = try langnet_spec.SearchRequest.decode(&reader, allocator);
-    defer search_request.deinit(allocator);
+    var reader: std.Io.Reader = .fixed(query_response_data);
+    var query_response = try langnet_spec.QueryResponse.decode(&reader, allocator);
+    defer query_response.deinit(allocator);
 
-    std.debug.print("   Decoded SearchRequest:\n", .{});
-    std.debug.print("     query: {s}\n", .{search_request.query});
-    std.debug.print("     page_number: {d}\n", .{search_request.page_number});
-    std.debug.print("     results_per_page: {d}\n", .{search_request.results_per_page});
-
-    // 2. Read and decode User from binary file
-    std.debug.print("\n2. Reading User from binary file...\n", .{});
-    const user_data = try std.fs.cwd().readFileAlloc(allocator, "output/user.bin", 1024);
-    defer allocator.free(user_data);
-
-    var user_reader: std.Io.Reader = .fixed(user_data);
-    var user = try langnet_spec.User.decode(&user_reader, allocator);
-    defer user.deinit(allocator);
-
-    std.debug.print("   Decoded User:\n", .{});
-    std.debug.print("     id: {s}\n", .{user.id});
-    std.debug.print("     username: {s}\n", .{user.username});
-    std.debug.print("     email: {s}\n", .{user.email});
-    std.debug.print("     roles: ", .{});
-    for (user.roles.items) |role| {
-        std.debug.print("{s} ", .{role});
+    std.debug.print("   Decoded QueryResponse:\n", .{});
+    std.debug.print("     schema_version: {s}\n", .{query_response.schema_version});
+    if (query_response.query) |q| {
+        std.debug.print("     query.surface: {s}\n", .{q.surface});
+        std.debug.print("     query.language_hint: {}\n", .{q.language_hint});
     }
-    std.debug.print("\n", .{});
+    std.debug.print("     lemmas count: {d}\n", .{query_response.lemmas.items.len});
+    std.debug.print("     analyses count: {d}\n", .{query_response.analyses.items.len});
+    std.debug.print("     senses count: {d}\n", .{query_response.senses.items.len});
+    std.debug.print("     citations count: {d}\n", .{query_response.citations.items.len});
 
-    // 3. Read and decode SearchResponse from binary file
-    std.debug.print("\n3. Reading SearchResponse from binary file...\n", .{});
-    const search_response_data = try std.fs.cwd().readFileAlloc(allocator, "output/search_response.bin", 4096);
-    defer allocator.free(search_response_data);
+    // Print lemmas
+    std.debug.print("\n   Lemmas:\n", .{});
+    for (query_response.lemmas.items, 0..) |lemma, i| {
+        std.debug.print("     Lemma {d}:\n", .{i + 1});
+        std.debug.print("       lemma_id: {s}\n", .{lemma.lemma_id});
+        std.debug.print("       display: {s}\n", .{lemma.display});
+        std.debug.print("       language: {}\n", .{lemma.language});
+        if (lemma.sources.items.len > 0) {
+            std.debug.print("       sources: ", .{});
+            for (lemma.sources.items, 0..) |source, j| {
+                if (j > 0) std.debug.print(", ", .{});
+                std.debug.print("{s}", .{source});
+            }
+            std.debug.print("\n", .{});
+        }
+    }
 
-    var search_response_reader: std.Io.Reader = .fixed(search_response_data);
-    var search_response = try langnet_spec.SearchResponse.decode(&search_response_reader, allocator);
-    defer search_response.deinit(allocator);
-
-    std.debug.print("   Decoded SearchResponse:\n", .{});
-    std.debug.print("     total_results: {d}\n", .{search_response.total_results});
-    std.debug.print("     page_number: {d}\n", .{search_response.page_number});
-    std.debug.print("     results count: {d}\n", .{search_response.results.items.len});
-
-    for (search_response.results.items, 0..) |result, i| {
-        std.debug.print("     Result {d}:\n", .{i + 1});
-        std.debug.print("       id: {s}\n", .{result.id});
-        std.debug.print("       title: {s}\n", .{result.title});
-        std.debug.print("       url: {s}\n", .{result.url});
-        std.debug.print("       snippet: {s}\n", .{result.snippet});
-        if (result.metadata.items.len > 0) {
-            std.debug.print("       metadata:\n", .{});
-            for (result.metadata.items) |entry| {
-                std.debug.print("         {s}: {s}\n", .{ entry.key, entry.value });
+    // Print analyses
+    if (query_response.analyses.items.len > 0) {
+        std.debug.print("\n   Analyses:\n", .{});
+        for (query_response.analyses.items, 0..) |analysis, i| {
+            std.debug.print("     Analysis {d}:\n", .{i + 1});
+            std.debug.print("       type: {}\n", .{analysis.type});
+            if (analysis.features) |features| {
+                std.debug.print("       features.pos: {}\n", .{features.pos});
+                std.debug.print("       features.case: {}\n", .{features.case});
+                std.debug.print("       features.number: {}\n", .{features.number});
+                std.debug.print("       features.gender: {}\n", .{features.gender});
             }
         }
     }
 
-    // 4. Demonstrate JSON decoding (optional)
-    std.debug.print("\n4. Reading SearchRequest from JSON file...\n", .{});
-    const search_request_json = try std.fs.cwd().readFileAlloc(allocator, "output/search_request.json", 1024);
-    defer allocator.free(search_request_json);
+    // 2. Read and decode SimpleSearchQuery from binary file
+    std.debug.print("\n2. Reading SimpleSearchQuery from binary file...\n", .{});
+    const search_query_data = try std.fs.cwd().readFileAlloc(allocator, "output/simple_search_query.bin", 1024);
+    defer allocator.free(search_query_data);
 
-    var search_request_parsed = try langnet_spec.SearchRequest.jsonDecode(search_request_json, .{}, allocator);
-    defer search_request_parsed.deinit();
-    const search_request_from_json = search_request_parsed.value;
+    var search_query_reader: std.Io.Reader = .fixed(search_query_data);
+    var search_query = try langnet_spec.SimpleSearchQuery.decode(&search_query_reader, allocator);
+    defer search_query.deinit(allocator);
+
+    std.debug.print("   Decoded SimpleSearchQuery:\n", .{});
+    std.debug.print("     query: {s}\n", .{search_query.query});
+    std.debug.print("     language: {}\n", .{search_query.language});
+    std.debug.print("     max_results: {d}\n", .{search_query.max_results});
+    std.debug.print("     include_morphology: {}\n", .{search_query.include_morphology});
+    std.debug.print("     include_definitions: {}\n", .{search_query.include_definitions});
+
+    // 3. Demonstrate JSON decoding
+    std.debug.print("\n3. Reading QueryResponse from JSON file...\n", .{});
+    const query_response_json = try std.fs.cwd().readFileAlloc(allocator, "output/query_response.json", 8192);
+    defer allocator.free(query_response_json);
+
+    var query_response_parsed = try langnet_spec.QueryResponse.jsonDecode(query_response_json, .{}, allocator);
+    defer query_response_parsed.deinit();
+    const query_response_from_json = query_response_parsed.value;
 
     std.debug.print("   Decoded from JSON:\n", .{});
-    std.debug.print("     query: {s}\n", .{search_request_from_json.query});
-    std.debug.print("     page_number: {d}\n", .{search_request_from_json.page_number});
-    std.debug.print("     results_per_page: {d}\n", .{search_request_from_json.results_per_page});
+    std.debug.print("     schema_version: {s}\n", .{query_response_from_json.schema_version});
+    std.debug.print("     lemmas count: {d}\n", .{query_response_from_json.lemmas.items.len});
+    std.debug.print("     senses count: {d}\n", .{query_response_from_json.senses.items.len});
 
-    // 5. Create a new message and serialize it
-    std.debug.print("\n5. Creating and serializing new SearchRequest...\n", .{});
-    var new_request = langnet_spec.SearchRequest{
-        .query = "zig protocol buffers test",
-        .page_number = 42,
-        .results_per_page = 100,
+    // 4. Create a new SimpleSearchQuery and serialize it
+    std.debug.print("\n4. Creating and serializing new SimpleSearchQuery...\n", .{});
+    var new_search_query = langnet_spec.SimpleSearchQuery{
+        .query = "agni",
+        .language = .LANGUAGE_SAN,
+        .max_results = 5,
+        .include_morphology = true,
+        .include_definitions = true,
     };
 
     var w: std.Io.Writer.Allocating = .init(allocator);
     defer w.deinit();
-    try new_request.encode(&w.writer, allocator);
+    try new_search_query.encode(&w.writer, allocator);
 
-    std.debug.print("   Created new SearchRequest:\n", .{});
-    std.debug.print("     query: {s}\n", .{new_request.query});
-    std.debug.print("     page_number: {d}\n", .{new_request.page_number});
-    std.debug.print("     results_per_page: {d}\n", .{new_request.results_per_page});
+    std.debug.print("   Created new SimpleSearchQuery:\n", .{});
+    std.debug.print("     query: {s}\n", .{new_search_query.query});
+    std.debug.print("     language: {}\n", .{new_search_query.language});
+    std.debug.print("     max_results: {d}\n", .{new_search_query.max_results});
     std.debug.print("   Serialized size: {d} bytes\n", .{w.written().len});
 
     // Write the new binary file
@@ -107,8 +116,8 @@ pub fn main() !void {
 
     std.debug.print("\n=== Example Complete ===\n", .{});
     std.debug.print("\nCross-language verification:\n", .{});
-    std.debug.print("- Python wrote binary files\n", .{});
-    std.debug.print("- Zig successfully read them\n", .{});
-    std.debug.print("- Zig created new binary file\n", .{});
+    std.debug.print("- Python wrote binary files using actual schema\n", .{});
+    std.debug.print("- Zig successfully read QueryResponse and SimpleSearchQuery\n", .{});
+    std.debug.print("- Zig created new SimpleSearchQuery binary file\n", .{});
     std.debug.print("- Python can read zig_generated.bin\n", .{});
 }

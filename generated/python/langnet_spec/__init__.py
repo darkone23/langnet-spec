@@ -4,18 +4,32 @@
 # This file has been @generated
 
 __all__ = (
-    "ApiRequest",
-    "ApiResponse",
-    "Batch",
-    "Config",
-    "Error",
-    "Event",
-    "EventEventType",
-    "SearchRequest",
-    "SearchResponse",
-    "SearchResponseResult",
-    "Timestamp",
-    "User",
+    "Analysis",
+    "AnalysisType",
+    "Case",
+    "Citation",
+    "CitationType",
+    "Degree",
+    "Gender",
+    "Language",
+    "LanguageHint",
+    "Lemma",
+    "Mood",
+    "MorphologicalFeatures",
+    "NormalizationStep",
+    "Number",
+    "PartOfSpeech",
+    "Person",
+    "Provenance",
+    "Query",
+    "QueryResponse",
+    "Sense",
+    "SimpleSearchQuery",
+    "SimpleSearchResult",
+    "Tense",
+    "UiHints",
+    "Voice",
+    "Witness",
 )
 
 from dataclasses import dataclass
@@ -28,279 +42,768 @@ _COMPILER_VERSION = "0.9.0"
 betterproto2.check_compiler_version(_COMPILER_VERSION)
 
 
-class EventEventType(betterproto2.Enum):
-    SEARCH = 0
+class AnalysisType(betterproto2.Enum):
+    UNSPECIFIED = 0
 
-    USER_CREATED = 1
+    MORPHOLOGY = 1
 
-    USER_UPDATED = 2
+    ETYMOLOGY = 2
 
-    ERROR = 3
+    PHONOLOGY = 3
 
-    CONFIG_CHANGED = 4
+    @classmethod
+    def betterproto_value_to_renamed_proto_names(cls) -> dict[int, str]:
+        return {
+            0: "ANALYSIS_TYPE_UNSPECIFIED",
+            1: "ANALYSIS_TYPE_MORPHOLOGY",
+            2: "ANALYSIS_TYPE_ETYMOLOGY",
+            3: "ANALYSIS_TYPE_PHONOLOGY",
+        }
+
+    @classmethod
+    def betterproto_renamed_proto_names_to_value(cls) -> dict[str, int]:
+        return {
+            "ANALYSIS_TYPE_UNSPECIFIED": 0,
+            "ANALYSIS_TYPE_MORPHOLOGY": 1,
+            "ANALYSIS_TYPE_ETYMOLOGY": 2,
+            "ANALYSIS_TYPE_PHONOLOGY": 3,
+        }
+
+
+class Case(betterproto2.Enum):
+    UNSPECIFIED = 0
+
+    NOMINATIVE = 1
+
+    GENITIVE = 2
+
+    DATIVE = 3
+
+    ACCUSATIVE = 4
+
+    VOCATIVE = 5
+
+    ABLATIVE = 6
+
+    LOCATIVE = 7
+
+    INSTRUMENTAL = 8
+
+    @classmethod
+    def betterproto_value_to_renamed_proto_names(cls) -> dict[int, str]:
+        return {
+            0: "CASE_UNSPECIFIED",
+            1: "CASE_NOMINATIVE",
+            2: "CASE_GENITIVE",
+            3: "CASE_DATIVE",
+            4: "CASE_ACCUSATIVE",
+            5: "CASE_VOCATIVE",
+            6: "CASE_ABLATIVE",
+            7: "CASE_LOCATIVE",
+            8: "CASE_INSTRUMENTAL",
+        }
+
+    @classmethod
+    def betterproto_renamed_proto_names_to_value(cls) -> dict[str, int]:
+        return {
+            "CASE_UNSPECIFIED": 0,
+            "CASE_NOMINATIVE": 1,
+            "CASE_GENITIVE": 2,
+            "CASE_DATIVE": 3,
+            "CASE_ACCUSATIVE": 4,
+            "CASE_VOCATIVE": 5,
+            "CASE_ABLATIVE": 6,
+            "CASE_LOCATIVE": 7,
+            "CASE_INSTRUMENTAL": 8,
+        }
+
+
+class CitationType(betterproto2.Enum):
+    UNSPECIFIED = 0
+
+    CTS = 1
+
+    DICTIONARY = 2
+
+    MORPH = 3
+
+    ETYMOLOGY = 4
+
+    NOTE = 5
+
+    @classmethod
+    def betterproto_value_to_renamed_proto_names(cls) -> dict[int, str]:
+        return {
+            0: "CITATION_TYPE_UNSPECIFIED",
+            1: "CITATION_TYPE_CTS",
+            2: "CITATION_TYPE_DICTIONARY",
+            3: "CITATION_TYPE_MORPH",
+            4: "CITATION_TYPE_ETYMOLOGY",
+            5: "CITATION_TYPE_NOTE",
+        }
+
+    @classmethod
+    def betterproto_renamed_proto_names_to_value(cls) -> dict[str, int]:
+        return {
+            "CITATION_TYPE_UNSPECIFIED": 0,
+            "CITATION_TYPE_CTS": 1,
+            "CITATION_TYPE_DICTIONARY": 2,
+            "CITATION_TYPE_MORPH": 3,
+            "CITATION_TYPE_ETYMOLOGY": 4,
+            "CITATION_TYPE_NOTE": 5,
+        }
+
+
+class Degree(betterproto2.Enum):
+    UNSPECIFIED = 0
+
+    POSITIVE = 1
+
+    COMPARATIVE = 2
+
+    SUPERLATIVE = 3
+
+    @classmethod
+    def betterproto_value_to_renamed_proto_names(cls) -> dict[int, str]:
+        return {
+            0: "DEGREE_UNSPECIFIED",
+            1: "DEGREE_POSITIVE",
+            2: "DEGREE_COMPARATIVE",
+            3: "DEGREE_SUPERLATIVE",
+        }
+
+    @classmethod
+    def betterproto_renamed_proto_names_to_value(cls) -> dict[str, int]:
+        return {
+            "DEGREE_UNSPECIFIED": 0,
+            "DEGREE_POSITIVE": 1,
+            "DEGREE_COMPARATIVE": 2,
+            "DEGREE_SUPERLATIVE": 3,
+        }
+
+
+class Gender(betterproto2.Enum):
+    UNSPECIFIED = 0
+
+    MASCULINE = 1
+
+    FEMININE = 2
+
+    NEUTER = 3
+
+    COMMON = 4
+
+    @classmethod
+    def betterproto_value_to_renamed_proto_names(cls) -> dict[int, str]:
+        return {
+            0: "GENDER_UNSPECIFIED",
+            1: "GENDER_MASCULINE",
+            2: "GENDER_FEMININE",
+            3: "GENDER_NEUTER",
+            4: "GENDER_COMMON",
+        }
+
+    @classmethod
+    def betterproto_renamed_proto_names_to_value(cls) -> dict[str, int]:
+        return {
+            "GENDER_UNSPECIFIED": 0,
+            "GENDER_MASCULINE": 1,
+            "GENDER_FEMININE": 2,
+            "GENDER_NEUTER": 3,
+            "GENDER_COMMON": 4,
+        }
+
+
+class Language(betterproto2.Enum):
+    UNSPECIFIED = 0
+
+    LAT = 1
+    """
+    Latin
+    """
+
+    GRC = 2
+    """
+    Greek
+    """
+
+    SAN = 3
+    """
+    Sanskrit
+    """
+
+    @classmethod
+    def betterproto_value_to_renamed_proto_names(cls) -> dict[int, str]:
+        return {
+            0: "LANGUAGE_UNSPECIFIED",
+            1: "LANGUAGE_LAT",
+            2: "LANGUAGE_GRC",
+            3: "LANGUAGE_SAN",
+        }
+
+    @classmethod
+    def betterproto_renamed_proto_names_to_value(cls) -> dict[str, int]:
+        return {
+            "LANGUAGE_UNSPECIFIED": 0,
+            "LANGUAGE_LAT": 1,
+            "LANGUAGE_GRC": 2,
+            "LANGUAGE_SAN": 3,
+        }
+
+
+class LanguageHint(betterproto2.Enum):
+    UNSPECIFIED = 0
+
+    LAT = 1
+    """
+    Latin
+    """
+
+    GRC = 2
+    """
+    Greek
+    """
+
+    SAN = 3
+    """
+    Sanskrit
+    """
+
+    @classmethod
+    def betterproto_value_to_renamed_proto_names(cls) -> dict[int, str]:
+        return {
+            0: "LANGUAGE_HINT_UNSPECIFIED",
+            1: "LANGUAGE_HINT_LAT",
+            2: "LANGUAGE_HINT_GRC",
+            3: "LANGUAGE_HINT_SAN",
+        }
+
+    @classmethod
+    def betterproto_renamed_proto_names_to_value(cls) -> dict[str, int]:
+        return {
+            "LANGUAGE_HINT_UNSPECIFIED": 0,
+            "LANGUAGE_HINT_LAT": 1,
+            "LANGUAGE_HINT_GRC": 2,
+            "LANGUAGE_HINT_SAN": 3,
+        }
+
+
+class Mood(betterproto2.Enum):
+    UNSPECIFIED = 0
+
+    INDICATIVE = 1
+
+    SUBJUNCTIVE = 2
+
+    OPTATIVE = 3
+
+    IMPERATIVE = 4
+
+    INFINITIVE = 5
+
+    PARTICIPLE = 6
+
+    GERUND = 7
+
+    GERUNDIVE = 8
+
+    SUPINE = 9
+
+    @classmethod
+    def betterproto_value_to_renamed_proto_names(cls) -> dict[int, str]:
+        return {
+            0: "MOOD_UNSPECIFIED",
+            1: "MOOD_INDICATIVE",
+            2: "MOOD_SUBJUNCTIVE",
+            3: "MOOD_OPTATIVE",
+            4: "MOOD_IMPERATIVE",
+            5: "MOOD_INFINITIVE",
+            6: "MOOD_PARTICIPLE",
+            7: "MOOD_GERUND",
+            8: "MOOD_GERUNDIVE",
+            9: "MOOD_SUPINE",
+        }
+
+    @classmethod
+    def betterproto_renamed_proto_names_to_value(cls) -> dict[str, int]:
+        return {
+            "MOOD_UNSPECIFIED": 0,
+            "MOOD_INDICATIVE": 1,
+            "MOOD_SUBJUNCTIVE": 2,
+            "MOOD_OPTATIVE": 3,
+            "MOOD_IMPERATIVE": 4,
+            "MOOD_INFINITIVE": 5,
+            "MOOD_PARTICIPLE": 6,
+            "MOOD_GERUND": 7,
+            "MOOD_GERUNDIVE": 8,
+            "MOOD_SUPINE": 9,
+        }
+
+
+class Number(betterproto2.Enum):
+    UNSPECIFIED = 0
+
+    SINGULAR = 1
+
+    PLURAL = 2
+
+    DUAL = 3
+
+    @classmethod
+    def betterproto_value_to_renamed_proto_names(cls) -> dict[int, str]:
+        return {
+            0: "NUMBER_UNSPECIFIED",
+            1: "NUMBER_SINGULAR",
+            2: "NUMBER_PLURAL",
+            3: "NUMBER_DUAL",
+        }
+
+    @classmethod
+    def betterproto_renamed_proto_names_to_value(cls) -> dict[str, int]:
+        return {
+            "NUMBER_UNSPECIFIED": 0,
+            "NUMBER_SINGULAR": 1,
+            "NUMBER_PLURAL": 2,
+            "NUMBER_DUAL": 3,
+        }
+
+
+class PartOfSpeech(betterproto2.Enum):
+    POS_UNSPECIFIED = 0
+
+    POS_NOUN = 1
+
+    POS_VERB = 2
+
+    POS_ADJECTIVE = 3
+
+    POS_ADVERB = 4
+
+    POS_PRONOUN = 5
+
+    POS_PREPOSITION = 6
+
+    POS_CONJUNCTION = 7
+
+    POS_INTERJECTION = 8
+
+    POS_PARTICLE = 9
+
+    POS_NUMERAL = 10
+
+
+class Person(betterproto2.Enum):
+    UNSPECIFIED = 0
+
+    FIRST = 1
+
+    SECOND = 2
+
+    THIRD = 3
+
+    @classmethod
+    def betterproto_value_to_renamed_proto_names(cls) -> dict[int, str]:
+        return {
+            0: "PERSON_UNSPECIFIED",
+            1: "PERSON_FIRST",
+            2: "PERSON_SECOND",
+            3: "PERSON_THIRD",
+        }
+
+    @classmethod
+    def betterproto_renamed_proto_names_to_value(cls) -> dict[str, int]:
+        return {
+            "PERSON_UNSPECIFIED": 0,
+            "PERSON_FIRST": 1,
+            "PERSON_SECOND": 2,
+            "PERSON_THIRD": 3,
+        }
+
+
+class Tense(betterproto2.Enum):
+    UNSPECIFIED = 0
+
+    PRESENT = 1
+
+    IMPERFECT = 2
+
+    FUTURE = 3
+
+    AORIST = 4
+
+    PERFECT = 5
+
+    PLUPERFECT = 6
+
+    FUTURE_PERFECT = 7
+
+    @classmethod
+    def betterproto_value_to_renamed_proto_names(cls) -> dict[int, str]:
+        return {
+            0: "TENSE_UNSPECIFIED",
+            1: "TENSE_PRESENT",
+            2: "TENSE_IMPERFECT",
+            3: "TENSE_FUTURE",
+            4: "TENSE_AORIST",
+            5: "TENSE_PERFECT",
+            6: "TENSE_PLUPERFECT",
+            7: "TENSE_FUTURE_PERFECT",
+        }
+
+    @classmethod
+    def betterproto_renamed_proto_names_to_value(cls) -> dict[str, int]:
+        return {
+            "TENSE_UNSPECIFIED": 0,
+            "TENSE_PRESENT": 1,
+            "TENSE_IMPERFECT": 2,
+            "TENSE_FUTURE": 3,
+            "TENSE_AORIST": 4,
+            "TENSE_PERFECT": 5,
+            "TENSE_PLUPERFECT": 6,
+            "TENSE_FUTURE_PERFECT": 7,
+        }
+
+
+class Voice(betterproto2.Enum):
+    UNSPECIFIED = 0
+
+    ACTIVE = 1
+
+    MIDDLE = 2
+
+    PASSIVE = 3
+
+    MEDIO_PASSIVE = 4
+
+    @classmethod
+    def betterproto_value_to_renamed_proto_names(cls) -> dict[int, str]:
+        return {
+            0: "VOICE_UNSPECIFIED",
+            1: "VOICE_ACTIVE",
+            2: "VOICE_MIDDLE",
+            3: "VOICE_PASSIVE",
+            4: "VOICE_MEDIO_PASSIVE",
+        }
+
+    @classmethod
+    def betterproto_renamed_proto_names_to_value(cls) -> dict[str, int]:
+        return {
+            "VOICE_UNSPECIFIED": 0,
+            "VOICE_ACTIVE": 1,
+            "VOICE_MIDDLE": 2,
+            "VOICE_PASSIVE": 3,
+            "VOICE_MEDIO_PASSIVE": 4,
+        }
 
 
 @dataclass(eq=False, repr=False)
-class ApiRequest(betterproto2.Message):
+class Analysis(betterproto2.Message):
     """
-    API request wrapper
-
-    Oneofs:
-        - payload:
+    --- Analyses (Surface-Level Morphology) ---
     """
 
-    search: "SearchRequest | None" = betterproto2.field(
-        1, betterproto2.TYPE_MESSAGE, optional=True, group="payload"
+    type: "AnalysisType" = betterproto2.field(
+        1, betterproto2.TYPE_ENUM, default_factory=lambda: AnalysisType(0)
     )
 
-    user: "User | None" = betterproto2.field(
-        2, betterproto2.TYPE_MESSAGE, optional=True, group="payload"
+    features: "MorphologicalFeatures | None" = betterproto2.field(
+        2, betterproto2.TYPE_MESSAGE, optional=True
     )
 
-    request_id: "str" = betterproto2.field(3, betterproto2.TYPE_STRING)
-
-    sent_at: "Timestamp | None" = betterproto2.field(
-        4, betterproto2.TYPE_MESSAGE, optional=True
-    )
+    witnesses: "list[Witness]" = betterproto2.field(3, betterproto2.TYPE_MESSAGE, repeated=True)
 
 
-default_message_pool.register_message("langnet_spec", "ApiRequest", ApiRequest)
+default_message_pool.register_message("langnet_spec", "Analysis", Analysis)
 
 
 @dataclass(eq=False, repr=False)
-class ApiResponse(betterproto2.Message):
+class Citation(betterproto2.Message):
     """
-    API response wrapper
-
-    Oneofs:
-        - payload:
+    --- Citations ---
     """
 
-    search_response: "SearchResponse | None" = betterproto2.field(
-        1, betterproto2.TYPE_MESSAGE, optional=True, group="payload"
+    source: "str" = betterproto2.field(1, betterproto2.TYPE_STRING)
+
+    type: "CitationType" = betterproto2.field(
+        2, betterproto2.TYPE_ENUM, default_factory=lambda: CitationType(0)
     )
 
-    user_response: "User | None" = betterproto2.field(
-        2, betterproto2.TYPE_MESSAGE, optional=True, group="payload"
-    )
+    ref: "str" = betterproto2.field(3, betterproto2.TYPE_STRING)
 
-    error: "Error | None" = betterproto2.field(
-        3, betterproto2.TYPE_MESSAGE, optional=True, group="payload"
-    )
+    text: "str" = betterproto2.field(4, betterproto2.TYPE_STRING)
 
-    request_id: "str" = betterproto2.field(4, betterproto2.TYPE_STRING)
-
-    received_at: "Timestamp | None" = betterproto2.field(
-        5, betterproto2.TYPE_MESSAGE, optional=True
-    )
+    translation: "str" = betterproto2.field(5, betterproto2.TYPE_STRING)
 
 
-default_message_pool.register_message("langnet_spec", "ApiResponse", ApiResponse)
+default_message_pool.register_message("langnet_spec", "Citation", Citation)
 
 
 @dataclass(eq=False, repr=False)
-class Batch(betterproto2.Message):
+class Lemma(betterproto2.Message):
     """
-    Batch operation for multiple items
+    --- Lemmas ---
     """
 
-    searches: "list[SearchRequest]" = betterproto2.field(
-        1, betterproto2.TYPE_MESSAGE, repeated=True
+    lemma_id: "str" = betterproto2.field(1, betterproto2.TYPE_STRING)
+    """
+    e.g., "san:śiva"
+    """
+
+    display: "str" = betterproto2.field(2, betterproto2.TYPE_STRING)
+
+    language: "Language" = betterproto2.field(
+        3, betterproto2.TYPE_ENUM, default_factory=lambda: Language(0)
     )
 
-    users: "list[User]" = betterproto2.field(
-        2, betterproto2.TYPE_MESSAGE, repeated=True
-    )
+    sources: "list[str]" = betterproto2.field(4, betterproto2.TYPE_STRING, repeated=True)
+    """
+    ["MW", "Heritage"]
+    """
 
-    batch_id: "str" = betterproto2.field(3, betterproto2.TYPE_STRING)
 
-
-default_message_pool.register_message("langnet_spec", "Batch", Batch)
+default_message_pool.register_message("langnet_spec", "Lemma", Lemma)
 
 
 @dataclass(eq=False, repr=False)
-class Config(betterproto2.Message):
-    """
-    Configuration settings
-    """
+class MorphologicalFeatures(betterproto2.Message):
+    pos: "PartOfSpeech" = betterproto2.field(
+        1, betterproto2.TYPE_ENUM, default_factory=lambda: PartOfSpeech(0)
+    )
 
-    settings: "dict[str, str]" = betterproto2.field(
-        1,
+    case: "Case" = betterproto2.field(2, betterproto2.TYPE_ENUM, default_factory=lambda: Case(0))
+
+    number: "Number" = betterproto2.field(
+        3, betterproto2.TYPE_ENUM, default_factory=lambda: Number(0)
+    )
+
+    gender: "Gender" = betterproto2.field(
+        4, betterproto2.TYPE_ENUM, default_factory=lambda: Gender(0)
+    )
+
+    person: "Person" = betterproto2.field(
+        5, betterproto2.TYPE_ENUM, default_factory=lambda: Person(0)
+    )
+
+    tense: "Tense" = betterproto2.field(6, betterproto2.TYPE_ENUM, default_factory=lambda: Tense(0))
+
+    mood: "Mood" = betterproto2.field(7, betterproto2.TYPE_ENUM, default_factory=lambda: Mood(0))
+
+    voice: "Voice" = betterproto2.field(8, betterproto2.TYPE_ENUM, default_factory=lambda: Voice(0))
+
+    degree: "Degree" = betterproto2.field(
+        9, betterproto2.TYPE_ENUM, default_factory=lambda: Degree(0)
+    )
+
+    extras: "dict[str, str]" = betterproto2.field(
+        10,
         betterproto2.TYPE_MAP,
-        map_meta=betterproto2.map_meta(
-            betterproto2.TYPE_STRING, betterproto2.TYPE_STRING
-        ),
+        map_meta=betterproto2.map_meta(betterproto2.TYPE_STRING, betterproto2.TYPE_STRING),
     )
-
-    enabled_features: "list[str]" = betterproto2.field(
-        2, betterproto2.TYPE_STRING, repeated=True
-    )
-
-    last_updated: "Timestamp | None" = betterproto2.field(
-        3, betterproto2.TYPE_MESSAGE, optional=True
-    )
-
-
-default_message_pool.register_message("langnet_spec", "Config", Config)
-
-
-@dataclass(eq=False, repr=False)
-class Error(betterproto2.Message):
     """
-    Error response for API calls
+    Additional features
     """
-
-    code: "str" = betterproto2.field(1, betterproto2.TYPE_STRING)
-
-    message: "str" = betterproto2.field(2, betterproto2.TYPE_STRING)
-
-    details: "dict[str, str]" = betterproto2.field(
-        3,
-        betterproto2.TYPE_MAP,
-        map_meta=betterproto2.map_meta(
-            betterproto2.TYPE_STRING, betterproto2.TYPE_STRING
-        ),
-    )
-
-    timestamp: "Timestamp | None" = betterproto2.field(
-        4, betterproto2.TYPE_MESSAGE, optional=True
-    )
-
-
-default_message_pool.register_message("langnet_spec", "Error", Error)
-
-
-@dataclass(eq=False, repr=False)
-class Event(betterproto2.Message):
-    """
-    Event for tracking system activities
-    """
-
-    type: "EventEventType" = betterproto2.field(
-        1, betterproto2.TYPE_ENUM, default_factory=lambda: EventEventType(0)
-    )
-
-    id: "str" = betterproto2.field(2, betterproto2.TYPE_STRING)
-
-    data: "dict[str, str]" = betterproto2.field(
-        3,
-        betterproto2.TYPE_MAP,
-        map_meta=betterproto2.map_meta(
-            betterproto2.TYPE_STRING, betterproto2.TYPE_STRING
-        ),
-    )
-
-    occurred_at: "Timestamp | None" = betterproto2.field(
-        4, betterproto2.TYPE_MESSAGE, optional=True
-    )
-
-    source: "str" = betterproto2.field(5, betterproto2.TYPE_STRING)
-
-
-default_message_pool.register_message("langnet_spec", "Event", Event)
-
-
-@dataclass(eq=False, repr=False)
-class SearchRequest(betterproto2.Message):
-    """
-    SearchRequest represents a search query with pagination
-    """
-
-    query: "str" = betterproto2.field(1, betterproto2.TYPE_STRING)
-
-    page_number: "int" = betterproto2.field(2, betterproto2.TYPE_INT32)
-
-    results_per_page: "int" = betterproto2.field(3, betterproto2.TYPE_INT32)
-
-
-default_message_pool.register_message("langnet_spec", "SearchRequest", SearchRequest)
-
-
-@dataclass(eq=False, repr=False)
-class SearchResponse(betterproto2.Message):
-    """
-    SearchResponse contains search results
-    """
-
-    results: "list[SearchResponseResult]" = betterproto2.field(
-        1, betterproto2.TYPE_MESSAGE, repeated=True
-    )
-
-    total_results: "int" = betterproto2.field(2, betterproto2.TYPE_INT32)
-
-    page_number: "int" = betterproto2.field(3, betterproto2.TYPE_INT32)
-
-
-default_message_pool.register_message("langnet_spec", "SearchResponse", SearchResponse)
-
-
-@dataclass(eq=False, repr=False)
-class SearchResponseResult(betterproto2.Message):
-    id: "str" = betterproto2.field(1, betterproto2.TYPE_STRING)
-
-    title: "str" = betterproto2.field(2, betterproto2.TYPE_STRING)
-
-    url: "str" = betterproto2.field(3, betterproto2.TYPE_STRING)
-
-    snippet: "str" = betterproto2.field(4, betterproto2.TYPE_STRING)
-
-    metadata: "dict[str, str]" = betterproto2.field(
-        5,
-        betterproto2.TYPE_MAP,
-        map_meta=betterproto2.map_meta(
-            betterproto2.TYPE_STRING, betterproto2.TYPE_STRING
-        ),
-    )
 
 
 default_message_pool.register_message(
-    "langnet_spec", "SearchResponse.Result", SearchResponseResult
+    "langnet_spec", "MorphologicalFeatures", MorphologicalFeatures
 )
 
 
 @dataclass(eq=False, repr=False)
-class Timestamp(betterproto2.Message):
-    """
-    Timestamp for cross-language compatibility
-    """
+class NormalizationStep(betterproto2.Message):
+    operation: "str" = betterproto2.field(1, betterproto2.TYPE_STRING)
 
-    seconds: "int" = betterproto2.field(1, betterproto2.TYPE_INT64)
+    input: "str" = betterproto2.field(2, betterproto2.TYPE_STRING)
 
-    nanos: "int" = betterproto2.field(2, betterproto2.TYPE_INT32)
+    output: "str" = betterproto2.field(3, betterproto2.TYPE_STRING)
+
+    tool: "str" = betterproto2.field(4, betterproto2.TYPE_STRING)
 
 
-default_message_pool.register_message("langnet_spec", "Timestamp", Timestamp)
+default_message_pool.register_message("langnet_spec", "NormalizationStep", NormalizationStep)
 
 
 @dataclass(eq=False, repr=False)
-class User(betterproto2.Message):
+class Provenance(betterproto2.Message):
     """
-    User data structure
+    --- Provenance ---
     """
 
-    id: "str" = betterproto2.field(1, betterproto2.TYPE_STRING)
+    tool: "str" = betterproto2.field(1, betterproto2.TYPE_STRING)
 
-    username: "str" = betterproto2.field(2, betterproto2.TYPE_STRING)
 
-    email: "str" = betterproto2.field(3, betterproto2.TYPE_STRING)
+default_message_pool.register_message("langnet_spec", "Provenance", Provenance)
 
-    roles: "list[str]" = betterproto2.field(4, betterproto2.TYPE_STRING, repeated=True)
 
-    preferences: "dict[str, str]" = betterproto2.field(
-        5,
-        betterproto2.TYPE_MAP,
-        map_meta=betterproto2.map_meta(
-            betterproto2.TYPE_STRING, betterproto2.TYPE_STRING
-        ),
+@dataclass(eq=False, repr=False)
+class Query(betterproto2.Message):
+    """
+    --- Query Object ---
+    """
+
+    surface: "str" = betterproto2.field(1, betterproto2.TYPE_STRING)
+
+    language_hint: "LanguageHint" = betterproto2.field(
+        2, betterproto2.TYPE_ENUM, default_factory=lambda: LanguageHint(0)
     )
 
-    created_at: "Timestamp | None" = betterproto2.field(
-        6, betterproto2.TYPE_MESSAGE, optional=True
+    normalized: "str" = betterproto2.field(3, betterproto2.TYPE_STRING)
+
+    normalization_steps: "list[NormalizationStep]" = betterproto2.field(
+        4, betterproto2.TYPE_MESSAGE, repeated=True
     )
 
-    updated_at: "Timestamp | None" = betterproto2.field(
-        7, betterproto2.TYPE_MESSAGE, optional=True
+
+default_message_pool.register_message("langnet_spec", "Query", Query)
+
+
+@dataclass(eq=False, repr=False)
+class QueryResponse(betterproto2.Message):
+    """
+    Unified output schema for language queries
+
+    --- Top-Level Response ---
+    """
+
+    schema_version: "str" = betterproto2.field(1, betterproto2.TYPE_STRING)
+    """
+    "1.0.0"
+    """
+
+    query: "Query | None" = betterproto2.field(2, betterproto2.TYPE_MESSAGE, optional=True)
+
+    lemmas: "list[Lemma]" = betterproto2.field(3, betterproto2.TYPE_MESSAGE, repeated=True)
+
+    analyses: "list[Analysis]" = betterproto2.field(4, betterproto2.TYPE_MESSAGE, repeated=True)
+
+    senses: "list[Sense]" = betterproto2.field(5, betterproto2.TYPE_MESSAGE, repeated=True)
+
+    citations: "list[Citation]" = betterproto2.field(6, betterproto2.TYPE_MESSAGE, repeated=True)
+
+    provenance: "list[Provenance]" = betterproto2.field(7, betterproto2.TYPE_MESSAGE, repeated=True)
+
+    ui_hints: "UiHints | None" = betterproto2.field(8, betterproto2.TYPE_MESSAGE, optional=True)
+
+    warnings: "list[str]" = betterproto2.field(9, betterproto2.TYPE_STRING, repeated=True)
+
+
+default_message_pool.register_message("langnet_spec", "QueryResponse", QueryResponse)
+
+
+@dataclass(eq=False, repr=False)
+class Sense(betterproto2.Message):
+    """
+    --- Senses (Bucketed + Constant-Aligned) ---
+    """
+
+    sense_id: "str" = betterproto2.field(1, betterproto2.TYPE_STRING)
+    """
+    e.g., "B1"
+    """
+
+    semantic_constant: "str" = betterproto2.field(2, betterproto2.TYPE_STRING)
+    """
+    e.g., "AUSPICIOUSNESS"
+    """
+
+    display_gloss: "str" = betterproto2.field(3, betterproto2.TYPE_STRING)
+
+    domains: "list[str]" = betterproto2.field(4, betterproto2.TYPE_STRING, repeated=True)
+    """
+    ["general", "religious", "medical"]
+    """
+
+    register: "list[str]" = betterproto2.field(5, betterproto2.TYPE_STRING, repeated=True)
+    """
+    ["epithet", "poetic", "formal"]
+    """
+
+    witnesses: "list[Witness]" = betterproto2.field(6, betterproto2.TYPE_MESSAGE, repeated=True)
+
+
+default_message_pool.register_message("langnet_spec", "Sense", Sense)
+
+
+@dataclass(eq=False, repr=False)
+class SimpleSearchQuery(betterproto2.Message):
+    """
+    --- Simple Search Query (for testing examples) ---
+    """
+
+    query: "str" = betterproto2.field(1, betterproto2.TYPE_STRING)
+
+    language: "Language" = betterproto2.field(
+        2, betterproto2.TYPE_ENUM, default_factory=lambda: Language(0)
     )
 
+    max_results: "int" = betterproto2.field(3, betterproto2.TYPE_INT32)
 
-default_message_pool.register_message("langnet_spec", "User", User)
+    include_morphology: "bool" = betterproto2.field(4, betterproto2.TYPE_BOOL)
+
+    include_definitions: "bool" = betterproto2.field(5, betterproto2.TYPE_BOOL)
+
+
+default_message_pool.register_message("langnet_spec", "SimpleSearchQuery", SimpleSearchQuery)
+
+
+@dataclass(eq=False, repr=False)
+class SimpleSearchResult(betterproto2.Message):
+    word: "str" = betterproto2.field(1, betterproto2.TYPE_STRING)
+
+    lemma: "str" = betterproto2.field(2, betterproto2.TYPE_STRING)
+
+    language: "str" = betterproto2.field(3, betterproto2.TYPE_STRING)
+
+    part_of_speech: "str" = betterproto2.field(4, betterproto2.TYPE_STRING)
+
+    definition: "str" = betterproto2.field(5, betterproto2.TYPE_STRING)
+
+    morphology: "str" = betterproto2.field(6, betterproto2.TYPE_STRING)
+
+    relevance_score: "float" = betterproto2.field(7, betterproto2.TYPE_DOUBLE)
+
+    sources: "list[str]" = betterproto2.field(8, betterproto2.TYPE_STRING, repeated=True)
+
+
+default_message_pool.register_message("langnet_spec", "SimpleSearchResult", SimpleSearchResult)
+
+
+@dataclass(eq=False, repr=False)
+class UiHints(betterproto2.Message):
+    """
+    --- UI Hints ---
+    """
+
+    default_mode: "str" = betterproto2.field(1, betterproto2.TYPE_STRING)
+    """
+    "open", "skeptic"
+    """
+
+    primary_lemma: "str" = betterproto2.field(2, betterproto2.TYPE_STRING)
+    """
+    e.g., "san:śiva"
+    """
+
+    collapsed_senses: "list[str]" = betterproto2.field(3, betterproto2.TYPE_STRING, repeated=True)
+    """
+    ["B4", "B7"]
+    """
+
+
+default_message_pool.register_message("langnet_spec", "UiHints", UiHints)
+
+
+@dataclass(eq=False, repr=False)
+class Witness(betterproto2.Message):
+    source: "str" = betterproto2.field(1, betterproto2.TYPE_STRING)
+    """
+    e.g., "MW", "Heritage"
+    """
+
+    ref: "str" = betterproto2.field(2, betterproto2.TYPE_STRING)
+    """
+    e.g., "217497", "heritage:morph:ziva"
+    """
+
+
+default_message_pool.register_message("langnet_spec", "Witness", Witness)

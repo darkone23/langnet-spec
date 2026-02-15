@@ -1,101 +1,235 @@
 syntax = "proto3";
 package langnet_spec;
 
-// SearchRequest represents a search query with pagination
-message SearchRequest {
+// Unified output schema for language queries
+
+// --- Top-Level Response ---
+message QueryResponse {
+  string schema_version = 1;  // "eg 0.0.1"
+  Query query = 2;
+  repeated Lemma lemmas = 3;
+  repeated Analysis analyses = 4;
+  repeated Sense senses = 5;
+  repeated Citation citations = 6;
+  repeated Provenance provenance = 7;
+  UiHints ui_hints = 8;
+  repeated string warnings = 9;
+}
+
+// --- Query Object ---
+message Query {
+  string surface = 1;
+  LanguageHint language_hint = 2;
+  string normalized = 3;
+  repeated NormalizationStep normalization_steps = 4;
+}
+
+enum LanguageHint {
+  LANGUAGE_HINT_UNSPECIFIED = 0;
+  LANGUAGE_HINT_LAT = 1;  // Latin
+  LANGUAGE_HINT_GRC = 2;  // Greek
+  LANGUAGE_HINT_SAN = 3;  // Sanskrit
+}
+
+message NormalizationStep {
+  string operation = 1;
+  string input = 2;
+  string output = 3;
+  string tool = 4;
+}
+
+// --- Lemmas ---
+message Lemma {
+  string lemma_id = 1;  // e.g., "san:śiva"
+  string display = 2;
+  Language language = 3;
+  repeated string sources = 4;  // ["MW", "Heritage"]
+}
+
+enum Language {
+  LANGUAGE_UNSPECIFIED = 0;
+  LANGUAGE_LAT = 1;  // Latin
+  LANGUAGE_GRC = 2;  // Greek
+  LANGUAGE_SAN = 3;  // Sanskrit
+}
+
+// --- Analyses (Surface-Level Morphology) ---
+message Analysis {
+  AnalysisType type = 1;
+  MorphologicalFeatures features = 2;
+  repeated Witness witnesses = 3;
+}
+
+enum AnalysisType {
+  ANALYSIS_TYPE_UNSPECIFIED = 0;
+  ANALYSIS_TYPE_MORPHOLOGY = 1;
+  ANALYSIS_TYPE_ETYMOLOGY = 2;
+  ANALYSIS_TYPE_PHONOLOGY = 3;
+}
+
+message MorphologicalFeatures {
+  PartOfSpeech pos = 1;
+  Case case = 2;
+  Number number = 3;
+  Gender gender = 4;
+  Person person = 5;
+  Tense tense = 6;
+  Mood mood = 7;
+  Voice voice = 8;
+  Degree degree = 9;
+  map<string, string> extras = 10;  // Additional features
+}
+
+enum PartOfSpeech {
+  POS_UNSPECIFIED = 0;
+  POS_NOUN = 1;
+  POS_VERB = 2;
+  POS_ADJECTIVE = 3;
+  POS_ADVERB = 4;
+  POS_PRONOUN = 5;
+  POS_PREPOSITION = 6;
+  POS_CONJUNCTION = 7;
+  POS_INTERJECTION = 8;
+  POS_PARTICLE = 9;
+  POS_NUMERAL = 10;
+}
+
+enum Case {
+  CASE_UNSPECIFIED = 0;
+  CASE_NOMINATIVE = 1;
+  CASE_GENITIVE = 2;
+  CASE_DATIVE = 3;
+  CASE_ACCUSATIVE = 4;
+  CASE_VOCATIVE = 5;
+  CASE_ABLATIVE = 6;
+  CASE_LOCATIVE = 7;
+  CASE_INSTRUMENTAL = 8;
+}
+
+enum Number {
+  NUMBER_UNSPECIFIED = 0;
+  NUMBER_SINGULAR = 1;
+  NUMBER_PLURAL = 2;
+  NUMBER_DUAL = 3;
+}
+
+enum Gender {
+  GENDER_UNSPECIFIED = 0;
+  GENDER_MASCULINE = 1;
+  GENDER_FEMININE = 2;
+  GENDER_NEUTER = 3;
+  GENDER_COMMON = 4;
+}
+
+enum Person {
+  PERSON_UNSPECIFIED = 0;
+  PERSON_FIRST = 1;
+  PERSON_SECOND = 2;
+  PERSON_THIRD = 3;
+}
+
+enum Tense {
+  TENSE_UNSPECIFIED = 0;
+  TENSE_PRESENT = 1;
+  TENSE_IMPERFECT = 2;
+  TENSE_FUTURE = 3;
+  TENSE_AORIST = 4;
+  TENSE_PERFECT = 5;
+  TENSE_PLUPERFECT = 6;
+  TENSE_FUTURE_PERFECT = 7;
+}
+
+enum Mood {
+  MOOD_UNSPECIFIED = 0;
+  MOOD_INDICATIVE = 1;
+  MOOD_SUBJUNCTIVE = 2;
+  MOOD_OPTATIVE = 3;
+  MOOD_IMPERATIVE = 4;
+  MOOD_INFINITIVE = 5;
+  MOOD_PARTICIPLE = 6;
+  MOOD_GERUND = 7;
+  MOOD_GERUNDIVE = 8;
+  MOOD_SUPINE = 9;
+}
+
+enum Voice {
+  VOICE_UNSPECIFIED = 0;
+  VOICE_ACTIVE = 1;
+  VOICE_MIDDLE = 2;
+  VOICE_PASSIVE = 3;
+  VOICE_MEDIO_PASSIVE = 4;
+}
+
+enum Degree {
+  DEGREE_UNSPECIFIED = 0;
+  DEGREE_POSITIVE = 1;
+  DEGREE_COMPARATIVE = 2;
+  DEGREE_SUPERLATIVE = 3;
+}
+
+// --- Senses (Bucketed + Constant-Aligned) ---
+message Sense {
+  string sense_id = 1;  // e.g., "B1"
+  string semantic_constant = 2;  // e.g., "AUSPICIOUSNESS"
+  string display_gloss = 3;
+  repeated string domains = 4;  // ["general", "religious", "medical"]
+  repeated string register = 5;  // ["epithet", "poetic", "formal"]
+  repeated Witness witnesses = 6;
+}
+
+message Witness {
+  string source = 1;  // e.g., "MW", "Heritage"
+  string ref = 2;     // e.g., "217497", "heritage:morph:ziva"
+}
+
+// --- Citations ---
+message Citation {
+  string source = 1;
+  CitationType type = 2;
+  string ref = 3;
+  string text = 4;
+  string translation = 5;
+}
+
+// --- Simple Search Query (for testing examples) ---
+message SimpleSearchQuery {
   string query = 1;
-  int32 page_number = 2;
-  int32 results_per_page = 3;
+  Language language = 2;
+  int32 max_results = 3;
+  bool include_morphology = 4;
+  bool include_definitions = 5;
 }
 
-// SearchResponse contains search results
-message SearchResponse {
-  repeated Result results = 1;
-  int32 total_results = 2;
-  int32 page_number = 3;
-  
-  message Result {
-    string id = 1;
-    string title = 2;
-    string url = 3;
-    string snippet = 4;
-    map<string, string> metadata = 5;
-  }
+message SimpleSearchResult {
+  string word = 1;
+  string lemma = 2;
+  string language = 3;
+  string part_of_speech = 4;
+  string definition = 5;
+  string morphology = 6;
+  double relevance_score = 7;
+  repeated string sources = 8;
 }
 
-// User data structure
-message User {
-  string id = 1;
-  string username = 2;
-  string email = 3;
-  repeated string roles = 4;
-  map<string, string> preferences = 5;
-  Timestamp created_at = 6;
-  Timestamp updated_at = 7;
+enum CitationType {
+  CITATION_TYPE_UNSPECIFIED = 0;
+  CITATION_TYPE_CTS = 1;
+  CITATION_TYPE_DICTIONARY = 2;
+  CITATION_TYPE_MORPH = 3;
+  CITATION_TYPE_ETYMOLOGY = 4;
+  CITATION_TYPE_NOTE = 5;
 }
 
-// Timestamp for cross-language compatibility
-message Timestamp {
-  int64 seconds = 1;
-  int32 nanos = 2;
+// --- Provenance ---
+message Provenance {
+  string tool = 1;
 }
 
-// Error response for API calls
-message Error {
-  string code = 1;
-  string message = 2;
-  map<string, string> details = 3;
-  Timestamp timestamp = 4;
+// --- UI Hints ---
+message UiHints {
+  string default_mode = 1;  // "open", "skeptic"
+  string primary_lemma = 2;  // e.g., "san:śiva"
+  repeated string collapsed_senses = 3;  // ["B4", "B7"]
 }
 
-// API request wrapper
-message ApiRequest {
-  oneof payload {
-    SearchRequest search = 1;
-    User user = 2;
-  }
-  string request_id = 3;
-  Timestamp sent_at = 4;
-}
 
-// API response wrapper
-message ApiResponse {
-  oneof payload {
-    SearchResponse search_response = 1;
-    User user_response = 2;
-    Error error = 3;
-  }
-  string request_id = 4;
-  Timestamp received_at = 5;
-}
-
-// Configuration settings
-message Config {
-  map<string, string> settings = 1;
-  repeated string enabled_features = 2;
-  Timestamp last_updated = 3;
-}
-
-// Batch operation for multiple items
-message Batch {
-  repeated SearchRequest searches = 1;
-  repeated User users = 2;
-  string batch_id = 3;
-}
-
-// Event for tracking system activities
-message Event {
-  enum EventType {
-    SEARCH = 0;
-    USER_CREATED = 1;
-    USER_UPDATED = 2;
-    ERROR = 3;
-    CONFIG_CHANGED = 4;
-  }
-  
-  EventType type = 1;
-  string id = 2;
-  map<string, string> data = 3;
-  Timestamp occurred_at = 4;
-  string source = 5;
-}
