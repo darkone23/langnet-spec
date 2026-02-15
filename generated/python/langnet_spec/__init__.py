@@ -26,6 +26,7 @@ __all__ = (
     "Sense",
     "SimpleSearchQuery",
     "SimpleSearchResult",
+    "Source",
     "Tense",
     "UiHints",
     "Voice",
@@ -420,6 +421,85 @@ class Person(betterproto2.Enum):
         }
 
 
+class Source(betterproto2.Enum):
+    UNSPECIFIED = 0
+
+    MW = 1
+    """
+    Monier-Williams Sanskrit-English Dictionary
+    """
+
+    AP90 = 2
+    """
+    Apte Practical Sanskrit-English Dictionary
+    """
+
+    HERITAGE = 3
+    """
+    Sanskrit Heritage Platform
+    """
+
+    CDSL = 4
+    """
+    Cologne Digital Sanskrit Lexicon
+    """
+
+    WHITAKERS = 5
+    """
+    Whitaker's Words (Latin)
+    """
+
+    DIOGENES = 6
+    """
+    Diogenes (Latin/Greek)
+    """
+
+    LEWIS_SHORT = 7
+    """
+    Lewis & Short Latin Dictionary
+    """
+
+    LSJ = 8
+    """
+    Liddell-Scott-Jones Greek-English Lexicon
+    """
+
+    CLTK = 9
+    """
+    Classical Language Toolkit
+    """
+
+    @classmethod
+    def betterproto_value_to_renamed_proto_names(cls) -> dict[int, str]:
+        return {
+            0: "SOURCE_UNSPECIFIED",
+            1: "SOURCE_MW",
+            2: "SOURCE_AP90",
+            3: "SOURCE_HERITAGE",
+            4: "SOURCE_CDSL",
+            5: "SOURCE_WHITAKERS",
+            6: "SOURCE_DIOGENES",
+            7: "SOURCE_LEWIS_SHORT",
+            8: "SOURCE_LSJ",
+            9: "SOURCE_CLTK",
+        }
+
+    @classmethod
+    def betterproto_renamed_proto_names_to_value(cls) -> dict[str, int]:
+        return {
+            "SOURCE_UNSPECIFIED": 0,
+            "SOURCE_MW": 1,
+            "SOURCE_AP90": 2,
+            "SOURCE_HERITAGE": 3,
+            "SOURCE_CDSL": 4,
+            "SOURCE_WHITAKERS": 5,
+            "SOURCE_DIOGENES": 6,
+            "SOURCE_LEWIS_SHORT": 7,
+            "SOURCE_LSJ": 8,
+            "SOURCE_CLTK": 9,
+        }
+
+
 class Tense(betterproto2.Enum):
     UNSPECIFIED = 0
 
@@ -555,10 +635,7 @@ class Lemma(betterproto2.Message):
         3, betterproto2.TYPE_ENUM, default_factory=lambda: Language(0)
     )
 
-    sources: "list[str]" = betterproto2.field(4, betterproto2.TYPE_STRING, repeated=True)
-    """
-    ["MW", "Heritage"]
-    """
+    sources: "list[Source]" = betterproto2.field(4, betterproto2.TYPE_ENUM, repeated=True)
 
 
 default_message_pool.register_message("langnet_spec", "Lemma", Lemma)
@@ -667,7 +744,7 @@ class QueryResponse(betterproto2.Message):
 
     schema_version: "str" = betterproto2.field(1, betterproto2.TYPE_STRING)
     """
-    "1.0.0"
+    "eg 0.0.1"
     """
 
     query: "Query | None" = betterproto2.field(2, betterproto2.TYPE_MESSAGE, optional=True)
@@ -795,10 +872,9 @@ default_message_pool.register_message("langnet_spec", "UiHints", UiHints)
 
 @dataclass(eq=False, repr=False)
 class Witness(betterproto2.Message):
-    source: "str" = betterproto2.field(1, betterproto2.TYPE_STRING)
-    """
-    e.g., "MW", "Heritage"
-    """
+    source: "Source" = betterproto2.field(
+        1, betterproto2.TYPE_ENUM, default_factory=lambda: Source(0)
+    )
 
     ref: "str" = betterproto2.field(2, betterproto2.TYPE_STRING)
     """

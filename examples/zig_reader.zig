@@ -10,7 +10,7 @@ pub fn main() !void {
 
     // 1. Read and decode QueryResponse from binary file
     std.debug.print("1. Reading QueryResponse from binary file...\n", .{});
-    const query_response_data = try std.fs.cwd().readFileAlloc(allocator, "output/query_response.bin", 4096);
+    const query_response_data = try std.fs.cwd().readFileAlloc(allocator, "examples/output/query_response.bin", 4096);
     defer allocator.free(query_response_data);
 
     var reader: std.Io.Reader = .fixed(query_response_data);
@@ -39,7 +39,7 @@ pub fn main() !void {
             std.debug.print("       sources: ", .{});
             for (lemma.sources.items, 0..) |source, j| {
                 if (j > 0) std.debug.print(", ", .{});
-                std.debug.print("{s}", .{source});
+                std.debug.print("{s}", .{@tagName(source)});
             }
             std.debug.print("\n", .{});
         }

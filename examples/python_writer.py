@@ -16,34 +16,36 @@ import json
 # Add generated betterproto2 code to path
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), "..", "generated", "python"))
 
-from langnet_spec import (
-    QueryResponse,
-    Query,
-    Lemma,
-    Language,
-    LanguageHint,
-    NormalizationStep,
-    Analysis,
-    AnalysisType,
-    MorphologicalFeatures,
-    PartOfSpeech,
-    Case,
-    Number,
-    Gender,
-    Person,
-    Tense,
-    Mood,
-    Voice,
-    Degree,
-    Sense,
-    Witness,
-    Citation,
-    CitationType,
-    Provenance,
-    UiHints,
-    SimpleSearchQuery,
-    SimpleSearchResult,
-)
+import langnet_spec
+
+# Use the imported module
+QueryResponse = langnet_spec.QueryResponse
+Query = langnet_spec.Query
+Lemma = langnet_spec.Lemma
+Language = langnet_spec.Language
+LanguageHint = langnet_spec.LanguageHint
+NormalizationStep = langnet_spec.NormalizationStep
+Analysis = langnet_spec.Analysis
+AnalysisType = langnet_spec.AnalysisType
+MorphologicalFeatures = langnet_spec.MorphologicalFeatures
+PartOfSpeech = langnet_spec.PartOfSpeech
+Case = langnet_spec.Case
+Number = langnet_spec.Number
+Gender = langnet_spec.Gender
+Person = langnet_spec.Person
+Tense = langnet_spec.Tense
+Mood = langnet_spec.Mood
+Voice = langnet_spec.Voice
+Degree = langnet_spec.Degree
+Sense = langnet_spec.Sense
+Witness = langnet_spec.Witness
+Source = langnet_spec.Source
+Citation = langnet_spec.Citation
+CitationType = langnet_spec.CitationType
+Provenance = langnet_spec.Provenance
+UiHints = langnet_spec.UiHints
+SimpleSearchQuery = langnet_spec.SimpleSearchQuery
+SimpleSearchResult = langnet_spec.SimpleSearchResult
 
 
 def create_query_response():
@@ -66,19 +68,19 @@ def create_query_response():
             lemma_id="san:śiva",
             display="Śiva",
             language=Language.SAN,
-            sources=["MW", "Heritage"],
+            sources=[Source.MW, Source.HERITAGE],
         ),
         Lemma(
             lemma_id="san:śivaḥ",
             display="Śivaḥ",
             language=Language.SAN,
-            sources=["MW"],
+            sources=[Source.MW],
         ),
         Lemma(
             lemma_id="san:śivaḥ",
             display="Śivaḥ",
             language=Language.SAN,
-            sources=["MW"],
+            sources=[Source.MW],
         ),
     ]
 
@@ -96,8 +98,8 @@ def create_query_response():
             type=AnalysisType.MORPHOLOGY,
             features=noun_features,
             witnesses=[
-                Witness(source="MW", ref="217497"),
-                Witness(source="Heritage", ref="heritage:morph:ziva"),
+                Witness(source=Source.MW, ref="217497"),
+                Witness(source=Source.HERITAGE, ref="heritage:morph:ziva"),
             ],
         )
     ]
@@ -110,7 +112,7 @@ def create_query_response():
             display_gloss="auspicious, propitious, gracious, benign, kind",
             domains=["general", "religious"],
             register=["epithet", "poetic"],
-            witnesses=[Witness(source="MW", ref="217497")],
+            witnesses=[Witness(source=Source.MW, ref="217497")],
         ),
         Sense(
             sense_id="B2",
@@ -118,7 +120,7 @@ def create_query_response():
             display_gloss="the destroying or dissolving principle",
             domains=["religious", "mythological"],
             register=["formal"],
-            witnesses=[Witness(source="MW", ref="217497")],
+            witnesses=[Witness(source=Source.MW, ref="217497")],
         ),
         Sense(
             sense_id="B2",
@@ -126,7 +128,73 @@ def create_query_response():
             display_gloss="the destroying or dissolving principle",
             domains=["religious", "mythological"],
             register=["formal"],
-            witnesses=[Witness(source="MW", ref="217497")],
+            witnesses=[Witness(source=Source.MW, ref="217497")],
+        ),
+    ]
+
+    # Create Citations
+    citations = [
+        Citation(
+            source="Monier-Williams Sanskrit-English Dictionary",
+            type=CitationType.DICTIONARY,
+            ref="MW 217497",
+            text="śiva mf(ā)n. auspicious, propitious, gracious, benign, kind",
+            translation="auspicious, propitious, gracious, benign, kind",
+        ),
+        Citation(
+            source="Rigveda",
+            type=CitationType.CTS,
+            ref="RV 1.114.1",
+            text="śivaḥ śivābhir ṛtubhir yajāmahe",
+            translation="We worship Śiva with auspicious seasons",
+        ),
+    ]
+
+    # Create Morphological Features for noun analysis
+    noun_features = MorphologicalFeatures(
+        pos=PartOfSpeech.POS_NOUN,
+        case=Case.NOMINATIVE,
+        number=Number.SINGULAR,
+        gender=Gender.MASCULINE,
+    )
+
+    # Create Analyses
+    analyses = [
+        Analysis(
+            type=AnalysisType.MORPHOLOGY,
+            features=noun_features,
+            witnesses=[
+                Witness(source=Source.MW, ref="217497"),
+                Witness(source=Source.HERITAGE, ref="heritage:morph:ziva"),
+            ],
+        )
+    ]
+
+    # Create Senses
+    senses = [
+        Sense(
+            sense_id="B1",
+            semantic_constant="AUSPICIOUSNESS",
+            display_gloss="auspicious, propitious, gracious, benign, kind",
+            domains=["general", "religious"],
+            register=["epithet", "poetic"],
+            witnesses=[Witness(source=Source.MW, ref="217497")],
+        ),
+        Sense(
+            sense_id="B2",
+            semantic_constant="DESTRUCTION",
+            display_gloss="the destroying or dissolving principle",
+            domains=["religious", "mythological"],
+            register=["formal"],
+            witnesses=[Witness(source=Source.MW, ref="217497")],
+        ),
+        Sense(
+            sense_id="B2",
+            semantic_constant="DESTRUCTION",
+            display_gloss="the destroying or dissolving principle",
+            domains=["religious", "mythological"],
+            register=["formal"],
+            witnesses=[Witness(source=Source.MW, ref="217497")],
         ),
     ]
 

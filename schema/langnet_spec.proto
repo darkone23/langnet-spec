@@ -43,7 +43,20 @@ message Lemma {
   string lemma_id = 1;  // e.g., "san:śiva"
   string display = 2;
   Language language = 3;
-  repeated string sources = 4;  // ["MW", "Heritage"]
+  repeated Source sources = 4;
+}
+
+enum Source {
+  SOURCE_UNSPECIFIED = 0;
+  SOURCE_MW = 1;         // Monier-Williams Sanskrit-English Dictionary
+  SOURCE_AP90 = 2;       // Apte Practical Sanskrit-English Dictionary
+  SOURCE_HERITAGE = 3;   // Sanskrit Heritage Platform
+  SOURCE_CDSL = 4;       // Cologne Digital Sanskrit Lexicon
+  SOURCE_WHITAKERS = 5;  // Whitaker's Words (Latin)
+  SOURCE_DIOGENES = 6;   // Diogenes (Latin/Greek)
+  SOURCE_LEWIS_SHORT = 7; // Lewis & Short Latin Dictionary
+  SOURCE_LSJ = 8;        // Liddell-Scott-Jones Greek-English Lexicon
+  SOURCE_CLTK = 9;       // Classical Language Toolkit
 }
 
 enum Language {
@@ -178,7 +191,7 @@ message Sense {
 }
 
 message Witness {
-  string source = 1;  // e.g., "MW", "Heritage"
+  Source source = 1;
   string ref = 2;     // e.g., "217497", "heritage:morph:ziva"
 }
 

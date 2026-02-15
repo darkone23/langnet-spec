@@ -13,6 +13,20 @@ pub const LanguageHint = enum(i32) {
     _,
 };
 
+pub const Source = enum(i32) {
+    SOURCE_UNSPECIFIED = 0,
+    SOURCE_MW = 1,
+    SOURCE_AP90 = 2,
+    SOURCE_HERITAGE = 3,
+    SOURCE_CDSL = 4,
+    SOURCE_WHITAKERS = 5,
+    SOURCE_DIOGENES = 6,
+    SOURCE_LEWIS_SHORT = 7,
+    SOURCE_LSJ = 8,
+    SOURCE_CLTK = 9,
+    _,
+};
+
 pub const Language = enum(i32) {
     LANGUAGE_UNSPECIFIED = 0,
     LANGUAGE_LAT = 1,
@@ -383,13 +397,13 @@ pub const Lemma = struct {
     lemma_id: []const u8 = &.{},
     display: []const u8 = &.{},
     language: Language = @enumFromInt(0),
-    sources: std.ArrayListUnmanaged([]const u8) = .empty,
+    sources: std.ArrayListUnmanaged(Source) = .empty,
 
     pub const _desc_table = .{
         .lemma_id = fd(1, .{ .scalar = .string }),
         .display = fd(2, .{ .scalar = .string }),
         .language = fd(3, .@"enum"),
-        .sources = fd(4, .{ .repeated = .{ .scalar = .string } }),
+        .sources = fd(4, .{ .repeated = .@"enum" }),
     };
 
     /// Encodes the message to the writer
@@ -777,11 +791,11 @@ pub const Sense = struct {
 };
 
 pub const Witness = struct {
-    source: []const u8 = &.{},
+    source: Source = @enumFromInt(0),
     ref: []const u8 = &.{},
 
     pub const _desc_table = .{
-        .source = fd(1, .{ .scalar = .string }),
+        .source = fd(1, .@"enum"),
         .ref = fd(2, .{ .scalar = .string }),
     };
 
