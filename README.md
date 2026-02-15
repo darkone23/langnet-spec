@@ -17,8 +17,7 @@ This repository contains Protocol Buffer (`.proto`) schema definitions that can 
 ```
 langnet-spec/
 ├── schema/           # Protocol Buffer definitions
-│   ├── example.proto
-│   └── langnet.proto
+│   └── langnet_spec.proto
 ├── generated/        # Generated code (CHECKED IN)
 │   ├── python/      # Python protobuf classes
 │   └── zig/         # Zig protobuf structs
@@ -129,7 +128,7 @@ from_json = SearchRequest.from_json(json_data)
 
 ```zig
 const std = @import("std");
-const SearchRequest = @import("langnet-spec/generated/zig/example.pb.zig").SearchRequest;
+const SearchRequest = @import("langnet-spec/generated/zig/langnet_spec.pb.zig").SearchRequest;
 
 pub fn main() !void {
     var arena = std.heap.ArenaAllocator.init(std.heap.page_allocator);

@@ -20,20 +20,20 @@ pub fn build(b: *std.Build) void {
             .optimize = optimize,
             .imports = &.{
                 .{ .name = "protobuf", .module = zig_protobuf_module },
-                .{ .name = "generated_example", .module = b.addModule("generated_example", .{
-                    .root_source_file = b.path("generated/zig/example.pb.zig"),
+                .{ .name = "langnet_spec", .module = b.addModule("langnet_spec", .{
+                    .root_source_file = b.path("generated/zig/langnet_spec.pb.zig"),
                     .target = target,
                     .optimize = optimize,
                     .imports = &.{
                         .{ .name = "protobuf", .module = zig_protobuf_module },
-                    },
-                }) },
-                .{ .name = "generated_langnet", .module = b.addModule("generated_langnet", .{
-                    .root_source_file = b.path("generated/zig/langnet.pb.zig"),
-                    .target = target,
-                    .optimize = optimize,
-                    .imports = &.{
-                        .{ .name = "protobuf", .module = zig_protobuf_module },
+                        .{ .name = "langnet_spec", .module = b.addModule("langnet_spec", .{
+                            .root_source_file = b.path("generated/zig/langnet_spec.pb.zig"),
+                            .target = target,
+                            .optimize = optimize,
+                            .imports = &.{
+                                .{ .name = "protobuf", .module = zig_protobuf_module },
+                            },
+                        }) },
                     },
                 }) },
             },

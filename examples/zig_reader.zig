@@ -1,6 +1,5 @@
 const std = @import("std");
-const SearchRequest = @import("generated_example").SearchRequest;
-const langnet = @import("generated_langnet");
+const langnet_spec = @import("langnet_spec");
 
 pub fn main() !void {
     var arena = std.heap.ArenaAllocator.init(std.heap.page_allocator);
@@ -15,7 +14,7 @@ pub fn main() !void {
     defer allocator.free(search_request_data);
 
     var reader: std.Io.Reader = .fixed(search_request_data);
-    var search_request = try SearchRequest.decode(&reader, allocator);
+    var search_request = try langnet_spec.SearchRequest.decode(&reader, allocator);
     defer search_request.deinit(allocator);
 
     std.debug.print("   Decoded SearchRequest:\n", .{});
@@ -29,7 +28,7 @@ pub fn main() !void {
     defer allocator.free(user_data);
 
     var user_reader: std.Io.Reader = .fixed(user_data);
-    var user = try langnet.User.decode(&user_reader, allocator);
+    var user = try langnet_spec.User.decode(&user_reader, allocator);
     defer user.deinit(allocator);
 
     std.debug.print("   Decoded User:\n", .{});
@@ -48,7 +47,7 @@ pub fn main() !void {
     defer allocator.free(search_response_data);
 
     var search_response_reader: std.Io.Reader = .fixed(search_response_data);
-    var search_response = try langnet.SearchResponse.decode(&search_response_reader, allocator);
+    var search_response = try langnet_spec.SearchResponse.decode(&search_response_reader, allocator);
     defer search_response.deinit(allocator);
 
     std.debug.print("   Decoded SearchResponse:\n", .{});
@@ -75,7 +74,7 @@ pub fn main() !void {
     const search_request_json = try std.fs.cwd().readFileAlloc(allocator, "output/search_request.json", 1024);
     defer allocator.free(search_request_json);
 
-    var search_request_parsed = try SearchRequest.jsonDecode(search_request_json, .{}, allocator);
+    var search_request_parsed = try langnet_spec.SearchRequest.jsonDecode(search_request_json, .{}, allocator);
     defer search_request_parsed.deinit();
     const search_request_from_json = search_request_parsed.value;
 
@@ -86,7 +85,7 @@ pub fn main() !void {
 
     // 5. Create a new message and serialize it
     std.debug.print("\n5. Creating and serializing new SearchRequest...\n", .{});
-    var new_request = SearchRequest{
+    var new_request = langnet_spec.SearchRequest{
         .query = "zig protocol buffers test",
         .page_number = 42,
         .results_per_page = 100,

@@ -16,7 +16,7 @@ import json
 # Add generated betterproto2 code to path
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), "..", "generated", "python"))
 
-from langnet import (
+from langnet_spec import (
     SearchRequest,
     SearchResponse,
     SearchResponseResult,

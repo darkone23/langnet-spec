@@ -1,5 +1,5 @@
 syntax = "proto3";
-package langnet;
+package langnet_spec;
 
 // SearchRequest represents a search query with pagination
 message SearchRequest {
