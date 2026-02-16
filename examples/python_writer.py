@@ -3,7 +3,7 @@
 Python writer example for LangNet schema.
 
 This demonstrates:
-1. Creating protobuf messages in Python using betterproto2
+1. Creating protobuf messages in Python using the generated modules (standard protobuf)
 2. Serializing to binary (for Zig consumption)
 3. Serializing to JSON (for human-readable debugging)
 4. Writing files for Zig to read
@@ -13,239 +13,157 @@ import sys
 import os
 import json
 
-# Add generated betterproto2 code to path
+from google.protobuf.json_format import MessageToJson, MessageToDict
+
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), "..", "generated", "python"))
 
 import langnet_spec
-
-# Use the imported module
-QueryResponse = langnet_spec.QueryResponse
-Query = langnet_spec.Query
-Lemma = langnet_spec.Lemma
-Language = langnet_spec.Language
-LanguageHint = langnet_spec.LanguageHint
-NormalizationStep = langnet_spec.NormalizationStep
-Analysis = langnet_spec.Analysis
-AnalysisType = langnet_spec.AnalysisType
-MorphologicalFeatures = langnet_spec.MorphologicalFeatures
-PartOfSpeech = langnet_spec.PartOfSpeech
-Case = langnet_spec.Case
-Number = langnet_spec.Number
-Gender = langnet_spec.Gender
-Person = langnet_spec.Person
-Tense = langnet_spec.Tense
-Mood = langnet_spec.Mood
-Voice = langnet_spec.Voice
-Degree = langnet_spec.Degree
-Sense = langnet_spec.Sense
-Witness = langnet_spec.Witness
-Source = langnet_spec.Source
-Citation = langnet_spec.Citation
-CitationType = langnet_spec.CitationType
-Provenance = langnet_spec.Provenance
-UiHints = langnet_spec.UiHints
-SimpleSearchQuery = langnet_spec.SimpleSearchQuery
-SimpleSearchResult = langnet_spec.SimpleSearchResult
 
 
 def create_query_response():
     """Create a complete QueryResponse with sample data."""
     # Create Query
-    query = Query(
-        surface="śiva",
-        language_hint=LanguageHint.SAN,
-        normalized="śiva",
-        normalization_steps=[
-            NormalizationStep(
-                operation="normalize_unicode", input="śiva", output="śiva", tool="unicodedata"
-            )
-        ],
+    query = langnet_spec.Query(
+        surface="si\u0301va",
+        language_hint=langnet_spec.LANGUAGE_HINT_SAN,
+        normalized="si\u0301va",
     )
+    step = query.normalization_steps.add()
+    step.operation = "normalize_unicode"
+    step.input = "si\u0301va"
+    step.output = "si\u0301va"
+    step.tool = "unicodedata"
 
     # Create Lemmas
-    lemmas = [
-        Lemma(
-            lemma_id="san:śiva",
-            display="Śiva",
-            language=Language.SAN,
-            sources=[Source.MW, Source.HERITAGE],
-        ),
-        Lemma(
-            lemma_id="san:śivaḥ",
-            display="Śivaḥ",
-            language=Language.SAN,
-            sources=[Source.MW],
-        ),
-        Lemma(
-            lemma_id="san:śivaḥ",
-            display="Śivaḥ",
-            language=Language.SAN,
-            sources=[Source.MW],
-        ),
-    ]
+    lemma1 = langnet_spec.Lemma(
+        lemma_id="san:\u015bi\u0301va",
+        display="\u015aiva",
+        language=langnet_spec.LANGUAGE_SAN,
+    )
+    lemma1.sources.append(langnet_spec.SOURCE_MW)
+    lemma1.sources.append(langnet_spec.SOURCE_HERITAGE)
+
+    lemma2 = langnet_spec.Lemma(
+        lemma_id="san:\u015bi\u0301va\u1e25",
+        display="\u015aiva\u1e25",
+        language=langnet_spec.LANGUAGE_SAN,
+    )
+    lemma2.sources.append(langnet_spec.SOURCE_MW)
+
+    lemma3 = langnet_spec.Lemma(
+        lemma_id="san:\u015bi\u0301va\u1e25",
+        display="\u015aiva\u1e25",
+        language=langnet_spec.LANGUAGE_SAN,
+    )
+    lemma3.sources.append(langnet_spec.SOURCE_MW)
 
     # Create Morphological Features for noun analysis
-    noun_features = MorphologicalFeatures(
-        pos=PartOfSpeech.POS_NOUN,
-        case=Case.NOMINATIVE,
-        number=Number.SINGULAR,
-        gender=Gender.MASCULINE,
+    noun_features = langnet_spec.MorphologicalFeatures(
+        pos=langnet_spec.POS_NOUN,
+        case=langnet_spec.CASE_NOMINATIVE,
+        number=langnet_spec.NUMBER_SINGULAR,
+        gender=langnet_spec.GENDER_MASCULINE,
     )
 
-    # Create Analyses
-    analyses = [
-        Analysis(
-            type=AnalysisType.MORPHOLOGY,
-            features=noun_features,
-            witnesses=[
-                Witness(source=Source.MW, ref="217497"),
-                Witness(source=Source.HERITAGE, ref="heritage:morph:ziva"),
-            ],
-        )
-    ]
+    # Create Analysis with witness
+    analysis = langnet_spec.Analysis(
+        type=langnet_spec.ANALYSIS_TYPE_MORPHOLOGY,
+        features=noun_features,
+    )
+    witness1 = analysis.witnesses.add()
+    witness1.source = langnet_spec.SOURCE_MW
+    witness1.ref = "217497"
+
+    witness2 = analysis.witnesses.add()
+    witness2.source = langnet_spec.SOURCE_HERITAGE
+    witness2.ref = "heritage:morph:ziva"
 
     # Create Senses
-    senses = [
-        Sense(
-            sense_id="B1",
-            semantic_constant="AUSPICIOUSNESS",
-            display_gloss="auspicious, propitious, gracious, benign, kind",
-            domains=["general", "religious"],
-            register=["epithet", "poetic"],
-            witnesses=[Witness(source=Source.MW, ref="217497")],
-        ),
-        Sense(
-            sense_id="B2",
-            semantic_constant="DESTRUCTION",
-            display_gloss="the destroying or dissolving principle",
-            domains=["religious", "mythological"],
-            register=["formal"],
-            witnesses=[Witness(source=Source.MW, ref="217497")],
-        ),
-        Sense(
-            sense_id="B2",
-            semantic_constant="DESTRUCTION",
-            display_gloss="the destroying or dissolving principle",
-            domains=["religious", "mythological"],
-            register=["formal"],
-            witnesses=[Witness(source=Source.MW, ref="217497")],
-        ),
-    ]
+    sense1 = langnet_spec.Sense(
+        sense_id="B1",
+        semantic_constant="AUSPICIOUSNESS",
+        display_gloss="auspicious, propitious, gracious, benign, kind",
+    )
+    sense1.domains.append("general")
+    sense1.domains.append("religious")
+    sense1.register.append("epithet")
+    sense1.register.append("poetic")
+    sense1_witness = sense1.witnesses.add()
+    sense1_witness.source = langnet_spec.SOURCE_MW
+    sense1_witness.ref = "217497"
+
+    sense2 = langnet_spec.Sense(
+        sense_id="B2",
+        semantic_constant="DESTRUCTION",
+        display_gloss="the destroying or dissolving principle",
+    )
+    sense2.domains.append("religious")
+    sense2.domains.append("mythological")
+    sense2.register.append("formal")
+    sense2_witness = sense2.witnesses.add()
+    sense2_witness.source = langnet_spec.SOURCE_MW
+    sense2_witness.ref = "217497"
+
+    sense3 = langnet_spec.Sense(
+        sense_id="B2",
+        semantic_constant="DESTRUCTION",
+        display_gloss="the destroying or dissolving principle",
+    )
+    sense3.domains.append("religious")
+    sense3.domains.append("mythological")
+    sense3.register.append("formal")
+    sense3_witness = sense3.witnesses.add()
+    sense3_witness.source = langnet_spec.SOURCE_MW
+    sense3_witness.ref = "217497"
 
     # Create Citations
-    citations = [
-        Citation(
-            source="Monier-Williams Sanskrit-English Dictionary",
-            type=CitationType.DICTIONARY,
-            ref="MW 217497",
-            text="śiva mf(ā)n. auspicious, propitious, gracious, benign, kind",
-            translation="auspicious, propitious, gracious, benign, kind",
-        ),
-        Citation(
-            source="Rigveda",
-            type=CitationType.CTS,
-            ref="RV 1.114.1",
-            text="śivaḥ śivābhir ṛtubhir yajāmahe",
-            translation="We worship Śiva with auspicious seasons",
-        ),
-    ]
-
-    # Create Morphological Features for noun analysis
-    noun_features = MorphologicalFeatures(
-        pos=PartOfSpeech.POS_NOUN,
-        case=Case.NOMINATIVE,
-        number=Number.SINGULAR,
-        gender=Gender.MASCULINE,
+    citation1 = langnet_spec.Citation(
+        source="Monier-Williams Sanskrit-English Dictionary",
+        type=langnet_spec.CITATION_TYPE_DICTIONARY,
+        ref="MW 217497",
+        text="\u015bi\u0301va mf(\u0101)n. auspicious, propitious, gracious, benign, kind",
+        translation="auspicious, propitious, gracious, benign, kind",
     )
 
-    # Create Analyses
-    analyses = [
-        Analysis(
-            type=AnalysisType.MORPHOLOGY,
-            features=noun_features,
-            witnesses=[
-                Witness(source=Source.MW, ref="217497"),
-                Witness(source=Source.HERITAGE, ref="heritage:morph:ziva"),
-            ],
-        )
-    ]
-
-    # Create Senses
-    senses = [
-        Sense(
-            sense_id="B1",
-            semantic_constant="AUSPICIOUSNESS",
-            display_gloss="auspicious, propitious, gracious, benign, kind",
-            domains=["general", "religious"],
-            register=["epithet", "poetic"],
-            witnesses=[Witness(source=Source.MW, ref="217497")],
-        ),
-        Sense(
-            sense_id="B2",
-            semantic_constant="DESTRUCTION",
-            display_gloss="the destroying or dissolving principle",
-            domains=["religious", "mythological"],
-            register=["formal"],
-            witnesses=[Witness(source=Source.MW, ref="217497")],
-        ),
-        Sense(
-            sense_id="B2",
-            semantic_constant="DESTRUCTION",
-            display_gloss="the destroying or dissolving principle",
-            domains=["religious", "mythological"],
-            register=["formal"],
-            witnesses=[Witness(source=Source.MW, ref="217497")],
-        ),
-    ]
-
-    # Create Citations
-    citations = [
-        Citation(
-            source="Monier-Williams Sanskrit-English Dictionary",
-            type=CitationType.DICTIONARY,
-            ref="MW 217497",
-            text="śiva mf(ā)n. auspicious, propitious, gracious, benign, kind",
-            translation="auspicious, propitious, gracious, benign, kind",
-        ),
-        Citation(
-            source="Rigveda",
-            type=CitationType.CTS,
-            ref="RV 1.114.1",
-            text="śivaḥ śivābhir ṛtubhir yajāmahe",
-            translation="We worship Śiva with auspicious seasons",
-        ),
-    ]
+    citation2 = langnet_spec.Citation(
+        source="Rigveda",
+        type=langnet_spec.CITATION_TYPE_CTS,
+        ref="RV 1.114.1",
+        text="\u015biva\u1e25 \u015biv\u0101bhir \u1e9btubhir yaj\u0101mahe",
+        translation="We worship \u015aiva with auspicious seasons",
+    )
 
     # Create Provenance
-    provenance = [
-        Provenance(tool="langnet-analyzer-v1.0"),
-        Provenance(tool="morphology-parser-v0.5"),
-    ]
+    prov1 = langnet_spec.Provenance(tool="langnet-analyzer-v1.0")
+    prov2 = langnet_spec.Provenance(tool="morphology-parser-v0.5")
 
     # Create UI Hints
-    ui_hints = UiHints(default_mode="open", primary_lemma="san:śiva", collapsed_senses=["B2"])
+    ui_hints = langnet_spec.UiHints(
+        default_mode="open",
+        primary_lemma="san:\u015bi\u0301va",
+    )
+    ui_hints.collapsed_senses.append("B2")
 
     # Create QueryResponse
-    response = QueryResponse(
+    response = langnet_spec.QueryResponse(
         schema_version="1.0.0",
         query=query,
-        lemmas=lemmas,
-        analyses=analyses,
-        senses=senses,
-        citations=citations,
-        provenance=provenance,
-        ui_hints=ui_hints,
-        warnings=[],
     )
+    response.lemmas.extend([lemma1, lemma2, lemma3])
+    response.analyses.append(analysis)
+    response.senses.extend([sense1, sense2, sense3])
+    response.citations.extend([citation1, citation2])
+    response.provenance.extend([prov1, prov2])
+    response.ui_hints.CopyFrom(ui_hints)
 
     return response
 
 
 def create_simple_search_query():
     """Create a SimpleSearchQuery for testing."""
-    query = SimpleSearchQuery(
-        query="śiva",
-        language=Language.SAN,
+    query = langnet_spec.SimpleSearchQuery(
+        query="\u015bi\u0301va",
+        language=langnet_spec.LANGUAGE_SAN,
         max_results=10,
         include_morphology=True,
         include_definitions=True,
@@ -255,16 +173,17 @@ def create_simple_search_query():
 
 def create_simple_search_result():
     """Create a SimpleSearchResult for testing."""
-    result = SimpleSearchResult(
-        word="śiva",
-        lemma="Śiva",
+    result = langnet_spec.SimpleSearchResult(
+        word="\u015bi\u0301va",
+        lemma="\u015aiva",
         language="Sanskrit",
         part_of_speech="noun",
         definition="auspicious, propitious, gracious",
         morphology="nominative singular masculine",
         relevance_score=0.95,
-        sources=["MW", "Heritage"],
     )
+    result.sources.append("MW")
+    result.sources.append("Heritage")
     return result
 
 
@@ -283,8 +202,8 @@ def write_binary_files():
     for filename, message in messages:
         filepath = os.path.join(output_dir, filename)
         with open(filepath, "wb") as f:
-            f.write(bytes(message))
-        print(f"Written: {filepath} ({len(bytes(message))} bytes)")
+            f.write(message.SerializeToString())
+        print(f"Written: {filepath} ({len(message.SerializeToString())} bytes)")
 
     return output_dir
 
@@ -302,13 +221,13 @@ def write_json_files():
 
     for filename, message in messages:
         filepath = os.path.join(output_dir, filename)
-        json_data = message.to_json(indent=2)
+        json_data = MessageToJson(message, indent=2)
 
         with open(filepath, "w") as f:
             f.write(json_data)
 
         # Also create Python-native JSON for comparison
-        dict_data = message.to_dict()
+        dict_data = MessageToDict(message)
         native_filepath = os.path.join(output_dir, f"native_{filename}")
         with open(native_filepath, "w") as f:
             json.dump(dict_data, f, indent=2, default=str)
@@ -321,7 +240,7 @@ def write_json_files():
 
 def main():
     """Main demonstration function."""
-    print("=== Python Writer Example (betterproto2) ===\n")
+    print("=== Python Writer Example (standard protobuf) ===\n")
 
     # Create output directory
     output_dir = "output"
@@ -357,11 +276,11 @@ def main():
     print("\n4. Demonstrating JSON serialization...")
 
     # Show JSON example
-    json_str = query_response.to_json(indent=2)
+    json_str = MessageToJson(query_response, indent=2)
     print(f"   QueryResponse JSON (first 100 chars): {json_str[:100]}...")
 
     # Show binary size comparison
-    binary_size = len(bytes(query_response))
+    binary_size = len(query_response.SerializeToString())
     json_size = len(json_str.encode("utf-8"))
     print(f"\n5. Size comparison:")
     print(f"   Binary: {binary_size} bytes")
@@ -370,15 +289,17 @@ def main():
 
     print("\n6. Testing message equality and copy...")
 
-    # Test copy functionality
+    # Test comparison
     query_response_copy = create_query_response()
-    print(f"   QueryResponse equality: {query_response == query_response_copy}")
+    print(
+        f"   QueryResponse binary equality: {query_response.SerializeToString() == query_response_copy.SerializeToString()}"
+    )
 
     print("\n=== Example Complete ===")
     print(f"\nNext steps:")
     print(f"1. Run the Zig reader: zig build run -- reader")
     print(f"2. Check the 'output/' directory for generated files")
-    print(f"3. Use 'just generate-python' to regenerate betterproto2 code if schema changes")
+    print(f"3. Use 'just generate-python' to regenerate protobuf code if schema changes")
 
 
 if __name__ == "__main__":

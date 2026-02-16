@@ -62,13 +62,12 @@ git submodule add https://github.com/darkone23/langnet-spec
 # The generated code is already in the submodule, ready to use
 ```
 
-**In your Zig project:**
+**In your Zig project (or to refresh Python code):**
 ```bash
-# Generate Python code using betterproto2
 just generate-python
 ```
 
-Runs `protoc` with betterproto2 plugin to generate modern Python dataclasses in `generated/python/`. The old `generate-python` command is deprecated and now aliases to this.
+Runs `protoc --python_out` to generate standard Python protobuf modules in `generated/python/`, then strips the `_pb2` suffix for friendlier imports (e.g., `import langnet_spec`).
 
 ### Generate Zig Code Only
 
@@ -96,13 +95,13 @@ Removes all generated files in `generated/`.
 
 ## Usage Examples
 
-### Python Usage (betterproto2)
+### Python Usage
 
 ```python
 import sys
 sys.path.append('langnet-spec/generated/python')
 
-from langnet import SearchRequest
+from langnet_spec import SearchRequest
 
 # Create message
 request = SearchRequest(
@@ -200,7 +199,7 @@ just test-zig-compile
 
 The `examples/` directory contains working examples:
 
-1. **Python writes**: `python_writer.py` creates binary and JSON files using modern dataclasses
+1. **Python writes**: `python_writer.py` creates binary and JSON files using the generated protobuf messages
 2. **Zig reads**: `zig_reader.zig` reads Python-generated files, creates new binary
 
 ```bash
@@ -232,7 +231,7 @@ Recommended CI steps:
 ### Required Tools
 - `protoc` (Protocol Buffer compiler) - installed via Nix
 - `zig` (0.15.0 or later) - for Zig code generation
-- `python` (3.8+ with `betterproto2` package)
+- `python` (3.8+) with `protobuf` runtime
 
 ## Troubleshooting
 

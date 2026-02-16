@@ -12,22 +12,22 @@ generate-all:
     just format-python
     just format-zig
 
-# Generate Python protobuf code with betterproto2 dataclasses
+# Generate Python protobuf code (standard protoc, strip _pb2 suffix)
 generate-python:
     mkdir -p generated/python
     protoc \
-        --plugin=protoc-gen-python_betterproto2=.devenv/state/venv/bin/protoc-gen-python_betterproto2 \
-        --python_betterproto2_out=generated/python \
+        --python_out=generated/python \
         --proto_path=schema \
         schema/*.proto
     just fixup-python
-    @echo "✓ BetterProto2 code generated in generated/python/"
+    @echo "✓ Python protobuf code generated in generated/python/"
 
-# Fixup generated python code: (better betterproto)
+# Fixup generated python code: drop unused glue and rename modules
 fixup-python:
     rm -f generated/python/__init__.py generated/python/message_pool.py 2>/dev/null || true
-    find generated/python -name "*.py" -exec \
-        sed -i 's/from \.\.message_pool import default_message_pool/default_message_pool = betterproto2.MessagePool()/g' {} \;
+    for f in generated/python/*_pb2.py; do \
+        mv "$f" "${f/_pb2.py/.py}"; \
+    done
     @echo "✓ Python code fixup completed"
    
 # Build zig-protobuf plugin

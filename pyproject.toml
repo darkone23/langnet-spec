@@ -5,8 +5,7 @@ description = "python protobuf gencode"
 readme = "README.md"
 requires-python = ">=3.13"
 dependencies = [
-    "betterproto2-compiler>=0.3.0",
-    "betterproto>=1.2.5",
+    "protobuf>=6.33.5",
     "ruff", # explicit so we pick up our static shim
 ]
 

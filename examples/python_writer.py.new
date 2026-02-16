@@ -1,0 +1,255 @@
+#!/usr/bin/env python3
+"""
+Python writer example for LangNet schema.
+
+This demonstrates:
+    1.. Creating protobuf messages in Python using the generated modules
+2. Serializing to binary (for Zig consumption)
+3. Serializing to JSON (for human-readable debugging)
+4. Writing files for Zig to read
+"""
+
+import sys
+import os
+import json
+
+from google.protobuf.json_format import MessageToJson, MessageToDict
+
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), "..", "generated", "python"))
+
+import langnet_spec
+
+
+def create_query_response():
+    """Create a complete QueryResponse with sample data."""
+    # Create Query
+    query = langnet_spec.Query()
+    query.surface = "siva"
+    query.language_hint = lamۮet_spec.LANGUAGE_HINT_SAN
+    query.normalized = "siva"
+    nstep = query.normalization_steps.add()
+    nstep.operation = "normalize_unicode"
+    nstep.input = "siva"
+    nstep.output = "siva"
+    nstep.tool = "unicodedata"
+
+    # Create Lemmas
+    lemmas = []
+    for lemma_id, display, include_heritage in [
+        ("san:siva", "Siva", True),
+        ("san:sivah", "Sivah", False),
+        ("san:sivah", "Sivah", False),
+    ]:
+        lemma = langnet_spec.Lemma()
+        lemma.lemma_id = lemma_id
+        lemma.display = display
+        lemma.language = langnet_spec.LANGUAGE_SAN
+        lemma.sources.append(langnet_spec.SOURCE_MW)
+        if include_heritage:
+            lemma.sources.append(langnet_spec.SOURCE_HERITAGE)
+        lemmas.append(lemma)
+
+    noun_features = langnet_spec.MorphologicalFeatures()
+    noun_features.pos = langnet_spec.POS_NOUN
+    noun_features.case = langnet_spec.CASE_NOMINATIVE
+    noun_features.number = langnet_spec.NUMBER_SINGULAR
+    noun_features.gender = langnet_spec.GENDER_MASCULINE
+
+    analysis = langnet_spec.Analysis()
+    analysis.type = langnet_spec.ANALYSIS_TYPE_MORPHOLOGY
+    analysis.features.CopyFrom(noun_features)
+    w1 = analysis.witnesses.add()
+    w1.source = langnet_spec.SOURCE_MW
+    w1.ref = "217497"
+    w2 = analysis.witnesses.add()
+    w2.source = langnet_spec.SOURCE_HERITAGE
+    w2.ref = "heritage:morph:ziva"
+
+    senses = []
+    for sense_id, semantic_constant, display_gloss, domains, register in [
+        ("B1", "AUSPICIOUSNESS", "auspicious, propitious, gracious, benign, kind", ["general", "religious"], ["epithet", "poetic"]),
+        ("B2", "DESTRUCTION", "the destroying or dissolving principle", ["religious", "mythological"], ["formal"]),
+        ("B2", "DESTRUCTION", "the destroying or dissolving principle", ["religious", "mythological"], ["formal"]),
+    ]:
+        sense = langnet_spec.Sense()
+        sense.sense_id = sense_id
+        sense.semantic_constant = semantic_constant
+        sense.display_gloss = display_gloss
+        sense.domains.extend(domains)
+        sense.register.extend(register)
+        w = sense.witnesses.add()
+        w.source = langnet_spec.SOURCE_MW
+        w.ref = "217497"
+        senses.append(sense)
+
+    citations = []
+    for src, typ, ref, text, translation in [
+        ("Monier-Williams Sanskrit-English Dictionary", langnet_spec.CITATION_TYPE_DICTIONARY, "MW 217497", "siva mf(an. auspicious, propitious, gracious, benign, kind", "auspicious, propitious, gracious, benign, kind"),
+        ("Rigveda", langnet_spec.CITATION_TYPE_CTS, "RV 1.114.1", "sivah sivabhir tubhir yajamahe", "We worship Siva with auspicious seasons"),
+    ]:
+        citation = langnet_spec.Citation()
+        citation.source = src
+        citation.type = typ
+        citation.ref = ref
+        citation.text = text
+        citation.translation = translation
+        citations.append(citation)
+
+    provenance = []
+    for tool in ["langnet-analyzer-v1.0", "morphology-parser-v0.5"]:
+        p = langnet_spec.Provenance()
+        p.tool = tool
+        provenance.append(p)
+
+    ui_hints = langnet_spec.UiHints()
+    ui_hints.default_mode = "open"
+    ui_hints.primary_lemma = "san:siva"
+    ui_hints.collapsed_senses.append("B2")
+
+    response = langnet_spec.QueryResponse()
+    response.schema_version = "1.0.0"
+    response.query.CopyFrom(query)
+    response.lemmas.extend(lemmas)
+    response.analyses.append(analysis)
+    response.senses.extend(senses)
+    response.citations.extend(citations)
+    response.provenance.extend(provenance)
+    response.ui_hints.CopyFrom(ui_hints)
+    return response
+
+
+def create_simple_search_query():
+    query = langnet_spec.SimpleSearchQuery()
+    query.query = "siva"
+    query.language = langnet_spec.LANGUAGE_SAN
+    query.max_results = 10
+    query.include_morphology = True
+    query.include_definitions = True
+    return query
+
+
+def create_simple_search_result():
+    result = langnet_spec.SimpleSearchResult()
+    result.word = "siva"
+    result.lemma = "Siva"
+    result.language = "Sanskrit"
+    result.part_of_speech = "noun"
+    result.definition = "auspicious, propitious, gracious"
+    result.morphology = "nominative singular masculine"
+    result.relevance_score = 0.95
+    result.sources.extend(["MW", "Heritage"])
+    return result
+
+
+def write_binary_files():
+    output_dir = "output"
+    os.makedirs(output_dir, exist_ok=True)
+
+    messages = [
+        ("query_response.bin", create_query_response()),
+        ("simple_search_query.bin", create_simple_search_query()),
+        ("simple_search_result.bin", create_simple_search_result()),
+    ]
+
+    for filename, message in messages:
+        filepath = os.path.join(output_dir, filename)
+        data = message.SerializeToString()
+        with open(filepath, "wb") as f:
+            f.write(data)
+        print(f"Written: {filepath} ({len(data)} bytes)")
+
+    return output_dir
+
+
+def write_json_files():
+    output_dir = "output"
+    os.makedirs(output_dir, exist_ok=True)
+
+    messages = [
+        ("query_response.json", create_query_response()),
+        ("simple_search_query.json", create_simple_search_query()),
+        ("simple_search_result.json", create_simple_search_result()),
+    ]
+
+    for filename, message in messages:
+        filepath = os.path.join(output_dir, filename)
+        json_data = MessageToJson(message, indent=2)
+
+        with open(filepath, "w") as f:
+            f.write(json_data)
+
+        dict_data = MessageToDict(message)
+        native_filepath = os.path.join(output_dir, f"native_{filename}")
+        with open(native_filepath, "w") as f:
+            json.dump(dict_data, f, indent=2, default=str)
+
+        print(f"Written JSON: {filepath}")
+        print(f"Written native JSON: {native_filepath}")
+
+    return output_dir
+
+
+def main():
+    print("=== Python Writer Example (protobuf) ===")
+    print()
+
+    output_dir = "output"
+    os.makedirs(output_dir, exist_ok=True)
+
+    print("1. Creating sample messages...")
+
+    query_response = create_query_response()
+    simple_search_query = create_simple_search_query()
+    simple_search_result = create_simple_search_result()
+
+    print(f"   Created QueryResponse with:")
+    print(f"     - {len(query_response.lemmas)} lemmas")
+    print(f"     - {len(query_response.analyses)} analyses")
+    print(f"     - {len(query_response.senses)} senses")
+    print(f"     - {len(query_response.citations} citations")
+    print(f"   Created SimpleSearchQuery for: {simple_search_query.query}")
+    print(f"   Created SimpleSearchResult: {simple_search_result.word}")
+
+    print()
+    print("2. Serializing to binary...")
+
+    binary_dir = write_binary_files()
+    print(f"   Binary files written to: {binary_dir}/")
+
+    print()
+    print("3. Serializing to JSON...")
+
+    json_dir = write_json_files()
+    print(f"   JSON files written to: {json_dir}/")
+
+    print()
+    print("4. Demonstrating JSON serialization...")
+
+    json_str = MessageToJson(query_response, indent=2)
+    print(f"   QueryResponse JSON (first 100 chars): {json_str[:100]}...")
+
+    binary_size = len(query_response.SerializeToString())
+    json_size = len(json_str.encode("utf-8"))
+    print()
+    print("5. Size comparison:")
+    print(f"   Binary: {binary_size} bytes")
+    print(f"   JSON: {json_size} bytes")
+    print(f"   Ratio: {json_size / binary_size:.1f}x larger")
+
+    print()
+    print("6. Testing message equality and copy...")
+
+    query_response_copy = create_query_response()
+    print(f"   QueryResponse equality: {query_response == query_response_copy}")
+
+    print()
+    print("=== Example Complete ===")
+    print()
+    print("Next steps:")
+    print("1. Run the Zig reader: zig build run -- reader")
+    print("2. Check the output/ directory for generated files")
+    print("3. Use just generate-python to regenerate protobuf code if schema changes")
+
+
+if __name__ == "__main__":
+    main()
