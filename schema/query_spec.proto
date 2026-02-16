@@ -34,6 +34,8 @@ message ToolCallSpec {
   string expected_response_type = 5;       // "xml", "html", "json", "text"
   int32 priority = 6;                      // Relative ordering hint
   bool optional = 7;                       // If false, failure aborts the plan
+  ToolStage stage = 8;                     // Pipeline stage (fetch, extract, derive, claim)
+  string source_call_id = 9;               // For non-fetch nodes: upstream call this consumes
 }
 
 // Execution ordering dependency between tool calls.
@@ -76,4 +78,13 @@ enum LanguageHint {
   LANGUAGE_HINT_LAT = 1;  // Latin
   LANGUAGE_HINT_GRC = 2;  // Greek
   LANGUAGE_HINT_SAN = 3;  // Sanskrit
+}
+
+// Pipeline stage tags to support caching/dispatch.
+enum ToolStage {
+  TOOL_STAGE_UNSPECIFIED = 0;
+  TOOL_STAGE_FETCH = 1;    // External calls: HTTP/subprocess/db
+  TOOL_STAGE_EXTRACT = 2;  // Parse raw response into structured extraction
+  TOOL_STAGE_DERIVE = 3;   // Convert extractions to tool-specific facts
+  TOOL_STAGE_CLAIM = 4;    // Map derivations into normalized claims
 }

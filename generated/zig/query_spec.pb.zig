@@ -14,6 +14,16 @@ pub const LanguageHint = enum(i32) {
     _,
 };
 
+/// Pipeline stage tags to support caching/dispatch.
+pub const ToolStage = enum(i32) {
+    TOOL_STAGE_UNSPECIFIED = 0,
+    TOOL_STAGE_FETCH = 1,
+    TOOL_STAGE_EXTRACT = 2,
+    TOOL_STAGE_DERIVE = 3,
+    TOOL_STAGE_CLAIM = 4,
+    _,
+};
+
 /// Structured canonical candidate with encodings and provenance.
 pub const CanonicalCandidate = struct {
     lemma: []const u8 = &.{},
@@ -328,6 +338,8 @@ pub const ToolCallSpec = struct {
     expected_response_type: []const u8 = &.{},
     priority: i32 = 0,
     optional: bool = false,
+    stage: ToolStage = @enumFromInt(0),
+    source_call_id: []const u8 = &.{},
 
     pub const _desc_table = .{
         .tool = fd(1, .{ .scalar = .string }),
@@ -337,6 +349,8 @@ pub const ToolCallSpec = struct {
         .expected_response_type = fd(5, .{ .scalar = .string }),
         .priority = fd(6, .{ .scalar = .int32 }),
         .optional = fd(7, .{ .scalar = .bool }),
+        .stage = fd(8, .@"enum"),
+        .source_call_id = fd(9, .{ .scalar = .string }),
     };
 
     pub const ParamsEntry = struct {
