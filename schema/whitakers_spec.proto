@@ -1,0 +1,31 @@
+syntax = "proto3";
+package whitakers_spec;
+
+// Whitaker's Words (Latin) specific response types.
+// Raw tool outputs before normalization to langnet types.
+
+// Result from Whitaker's Words lookup
+message WhitakersResult {
+  string query = 1;
+  repeated WhitakersEntry entries = 2;
+  bool found = 3;
+}
+
+message WhitakersEntry {
+  string lemma = 1;              // Dictionary headword
+  string form = 2;               // The analyzed form
+  string part_of_speech = 3;     // NOUN, VERB, ADJ, etc.
+  repeated string senses = 4;    // Definition glosses
+  repeated string codes = 5;     // Morphological codes
+  string inflection = 6;         // Inflection information
+  string principal_parts = 7;    // For verbs: principal parts
+  string gender = 8;             // For nouns: gender
+  string declension = 9;         // Declension/conjugation number
+}
+
+// Parsed morphological codes from Whitaker's
+message MorphCode {
+  string code = 1;               // e.g., "N", "V", "ADJ"
+  string description = 2;        // Human readable description
+  repeated string features = 3;  // Feature breakdown
+}

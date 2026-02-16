@@ -1,0 +1,88 @@
+syntax = "proto3";
+package cdsl_spec;
+
+// Cologne Digital Sanskrit Lexicon (CDSL) specific response types.
+// Based on the MW XML structure documented at docs/upstream-docs/cdsl/MW-xml.md
+// Raw tool outputs before normalization to langnet types.
+
+// A complete dictionary entry from CDSL (e.g., Monier-Williams)
+message CDSEntry {
+  string lnum = 1;               // Unique L-number identifier (e.g., "13034")
+  string key1 = 2;               // Headword in SLP1 encoding (citation form)
+  string key2 = 3;               // Headword with accents/diacritics (display form)
+  string hom = 4;                // Homonym number if applicable
+  string dict = 5;               // Dictionary code: "MW", "AP90", etc.
+  CDSHead head = 6;              // Head section details
+  CDSBody body = 7;              // Body section (definitions)
+  CDSTail tail = 8;              // Tail section (references)
+}
+
+// Head section structure
+message CDSHead {
+  string hc3 = 1;                // 3-digit classification code
+  string key1 = 2;               // Headword SLP1
+  string key2 = 3;               // Headword with accents
+  string hom = 4;                // Homonym number
+  bool loan = 5;                 // Marked as loan word
+}
+
+// Body section structure
+message CDSBody {
+  repeated CDSLEx lexical_info = 1;     // Grammatical info (gender, etc.)
+  repeated CDSSense senses = 2;          // Definition senses
+  repeated CDSLiteraryRef sources = 3;   // Literary citations
+  repeated CDSXref cross_refs = 4;       // Cross-references
+  string etymology = 5;                  // Etymological info
+}
+
+// Lexical/grammatical information
+message CDSLEx {
+  string type = 1;               // Type: "" (default), "inh", "hw", "hwalt", "hwifc", etc.
+  string value = 2;              // Content: "m.", "f.", "n.", "ind.", etc.
+}
+
+// A single sense/definition
+message CDSSense {
+  string number = 1;             // Sense number (1, 2, 1a, 1b, etc.)
+  string text = 2;               // Definition text (English)
+  repeated CDSSanskrit sanskrit = 3;    // Sanskrit words in definition
+  repeated CDSLiteraryRef citations = 4; // Literary citations
+}
+
+// Sanskrit text within a definition
+message CDSSanskrit {
+  string slp1 = 1;               // SLP1 encoding
+  string root = 2;               // Verbal root if applicable
+  bool is_root = 3;              // Marked as root
+}
+
+// Literary source reference (from <ls> element)
+message CDSLiteraryRef {
+  string abbreviation = 1;       // Abbreviated source name
+  string reference = 2;          // Specific reference within work
+  string full_name = 3;          // Full work name if known
+}
+
+// Cross-reference to other entries
+message CDSXref {
+  string type = 1;               // "cf", "qv", "see", "AND", "OR"
+  string target_key = 2;         // Target headword
+  string target_lnum = 3;        // Target L-number if known
+}
+
+// Tail section structure
+message CDSTail {
+  string lnum = 1;               // L-number identifier
+  string page_col = 2;           // Page and column (e.g., "96,2")
+  string mw_num = 3;             // Legacy MW sequencing number
+}
+
+// Encoding variants for a Sanskrit term
+message SanskritEncoding {
+  string iast = 1;               // International Alphabet of Sanskrit Transliteration
+  string devanagari = 2;         // Devanagari script
+  string slp1 = 3;               // SLP1 encoding
+  string velthuis = 4;           // Velthuis encoding
+  string hk = 5;                 // Harvard-Kyoto encoding
+  string ipa = 6;                // International Phonetic Alphabet
+}

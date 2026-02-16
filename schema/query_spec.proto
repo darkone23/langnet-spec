@@ -1,0 +1,79 @@
+syntax = "proto3";
+
+package query_spec;
+
+// Structured canonical candidate with encodings and provenance.
+message CanonicalCandidate {
+  string lemma = 1;                      // Primary lemma (accented if available)
+  map<string, string> encodings = 2;     // Keyed by encoding: devanagari, iast, slp1, velthuis, hk, accentless, ipa
+  repeated string sources = 3;           // Tools that proposed this candidate (diogenes, heritage, whitakers, cltk)
+}
+
+// Normalized representation of a user query prior to planning.
+message NormalizedQuery {
+  string original = 1;                           // Raw user input
+  LanguageHint language = 2;                     // Language hint supplied or inferred
+  repeated CanonicalCandidate candidates = 3;    // Structured canonical candidates
+  repeated NormalizationStep normalizations = 4; // Applied normalization steps
+}
+
+// A single normalization operation applied to the query.
+message NormalizationStep {
+  string operation = 1;   // e.g., "transliterate", "lowercase"
+  string input = 2;       // Pre-operation value
+  string output = 3;      // Post-operation value
+  string tool = 4;        // Name of the encoder/normalizer
+}
+
+// Declarative specification of a tool call.
+message ToolCallSpec {
+  string tool = 1;                         // Registry key for the tool
+  string call_id = 2;                      // Stable UUID for provenance
+  string endpoint = 3;                     // URL or method identifier
+  map<string, string> params = 4;          // Tool-specific parameters
+  string expected_response_type = 5;       // "xml", "html", "json", "text"
+  int32 priority = 6;                      // Relative ordering hint
+  bool optional = 7;                       // If false, failure aborts the plan
+}
+
+// Execution ordering dependency between tool calls.
+message PlanDependency {
+  string from_call_id = 1;   // Parent call that must complete first
+  string to_call_id = 2;     // Dependent call that waits
+  string rationale = 3;      // Optional description of why the dependency exists
+}
+
+// Declarative plan describing which tools to call for a query.
+message ToolPlan {
+  string plan_id = 1;                         // Stable UUID for the plan
+  string plan_hash = 2;                       // Deterministic hash for caching
+  NormalizedQuery query = 3;                  // Normalized user query
+  repeated ToolCallSpec tool_calls = 4;       // Tool calls to execute
+  repeated PlanDependency dependencies = 5;   // Execution dependencies
+  int64 created_at_unix_ms = 6;               // Creation time (unix milliseconds)
+}
+
+// Result of executing a ToolPlan.
+message ExecutedPlan {
+  string plan_id = 1;                          // Plan identifier
+  string plan_hash = 2;                        // Hash used for cache lookups
+  repeated ToolResponseRef responses = 3;      // References to stored responses
+  int64 execution_time_ms = 4;                 // Total execution time
+  bool from_cache = 5;                         // True if resolved from cache
+}
+
+// Reference to a stored tool response.
+message ToolResponseRef {
+  string tool = 1;            // Tool name
+  string call_id = 2;         // Call identifier
+  string response_id = 3;     // Stable response ID
+  bool cached = 4;            // True if response came from cache
+}
+
+// Language hints mirror the primary schema to avoid cross-spec imports.
+enum LanguageHint {
+  LANGUAGE_HINT_UNSPECIFIED = 0;
+  LANGUAGE_HINT_LAT = 1;  // Latin
+  LANGUAGE_HINT_GRC = 2;  // Greek
+  LANGUAGE_HINT_SAN = 3;  // Sanskrit
+}

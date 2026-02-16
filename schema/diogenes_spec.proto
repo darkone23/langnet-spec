@@ -1,0 +1,36 @@
+syntax = "proto3";
+package diogenes_spec;
+
+// Diogenes (Latin/Greek) specific response types.
+// Raw tool outputs before normalization to langnet types.
+
+// Result from wordlist lookup (Greek)
+message WordlistResult {
+  string query = 1;
+  repeated WordlistEntry entries = 2;
+  bool found = 3;
+}
+
+message WordlistEntry {
+  string lemma = 1;              // Accented lemma (e.g., "λόγος")
+  string beta_code = 2;          // Betacode representation
+  string unaccented = 3;         // Strip accents form
+  string brief_definition = 4;   // Short gloss if available
+  repeated string matching_forms = 5;  // Forms that matched the query
+}
+
+// Result from parse lookup (Latin/Greek morphology)
+message ParseResult {
+  string query = 1;
+  repeated ParseAnalysis analyses = 2;
+  bool found = 3;
+}
+
+message ParseAnalysis {
+  string lemma = 1;              // Dictionary headword
+  string form = 2;               // The input form
+  string part_of_speech = 3;     // noun, verb, adj, etc.
+  repeated string features = 4;  // Grammatical features
+  string grammar_code = 5;       // Diogenes internal code
+  repeated string possible_lemmas = 6;  // Alternative lemma candidates
+}

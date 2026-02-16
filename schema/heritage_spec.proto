@@ -1,0 +1,39 @@
+syntax = "proto3";
+package heritage_spec;
+
+// Heritage Platform (Sanskrit) specific response types.
+// These are raw tool outputs before normalization to langnet types.
+
+// Result from sktsearch canonical lookup
+message SktSearchResult {
+  string original_query = 1;
+  string bare_query = 2;
+  string canonical_text = 3;       // Canonical Velthuis form, if found
+  string canonical_sanskrit = 4;   // Same as canonical_text
+  string match_method = 5;         // "sktsearch" or "not_found"
+  string entry_url = 6;            // Link to dictionary entry
+}
+
+// Result from MW dictionary lookup
+message MonierWilliamsResult {
+  string original_query = 1;
+  string bare_query = 2;
+  string canonical_sanskrit = 3;   // Canonical form from MW
+  string match_method = 4;
+  string entry_url = 5;
+}
+
+// Morphology analysis from sktreader
+message MorphologyAnalysis {
+  string form = 1;                 // Input form
+  string stem = 2;                 // Root/stem
+  string lemma = 3;                // Dictionary headword
+  string grammar = 4;              // Grammatical analysis string
+  repeated MorphologyPart parts = 5;
+}
+
+message MorphologyPart {
+  string stem = 1;
+  string ending = 2;
+  string analysis = 3;             // e.g., "noun", "masculine", "nominative", "singular"
+}
