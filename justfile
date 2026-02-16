@@ -17,6 +17,7 @@ generate-python:
     mkdir -p generated/python
     protoc \
         --python_out=generated/python \
+        --mypy_out=generated/python \
         --proto_path=schema \
         schema/*.proto
     just fixup-python
@@ -24,9 +25,11 @@ generate-python:
 
 # Fixup generated python code: drop unused glue and rename modules
 fixup-python:
-    rm -f generated/python/__init__.py generated/python/message_pool.py 2>/dev/null || true
     for f in generated/python/*_pb2.py; do \
         mv "$f" "${f/_pb2.py/.py}"; \
+    done
+    for f in generated/python/*_pb2.pyi; do \
+        mv "$f" "${f/_pb2.pyi/.pyi}"; \
     done
     @echo "✓ Python code fixup completed"
    

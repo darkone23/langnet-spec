@@ -4,48 +4,51 @@
 # source: cdsl_spec.proto
 # Protobuf Python Version: 6.32.1
 """Generated protocol buffer code."""
-
 from google.protobuf import descriptor as _descriptor
 from google.protobuf import descriptor_pool as _descriptor_pool
 from google.protobuf import runtime_version as _runtime_version
 from google.protobuf import symbol_database as _symbol_database
 from google.protobuf.internal import builder as _builder
-
 _runtime_version.ValidateProtobufRuntimeVersion(
-    _runtime_version.Domain.PUBLIC, 6, 32, 1, "", "cdsl_spec.proto"
+    _runtime_version.Domain.PUBLIC,
+    6,
+    32,
+    1,
+    '',
+    'cdsl_spec.proto'
 )
 # @@protoc_insertion_point(imports)
 
 _sym_db = _symbol_database.Default()
 
 
-DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(
-    b'\n\x0f\x63\x64sl_spec.proto\x12\tcdsl_spec"\xb5\x01\n\x08\x43\x44SEntry\x12\x0c\n\x04lnum\x18\x01 \x01(\t\x12\x0c\n\x04key1\x18\x02 \x01(\t\x12\x0c\n\x04key2\x18\x03 \x01(\t\x12\x0b\n\x03hom\x18\x04 \x01(\t\x12\x0c\n\x04\x64ict\x18\x05 \x01(\t\x12 \n\x04head\x18\x06 \x01(\x0b\x32\x12.cdsl_spec.CDSHead\x12 \n\x04\x62ody\x18\x07 \x01(\x0b\x32\x12.cdsl_spec.CDSBody\x12 \n\x04tail\x18\x08 \x01(\x0b\x32\x12.cdsl_spec.CDSTail"M\n\x07\x43\x44SHead\x12\x0b\n\x03hc3\x18\x01 \x01(\t\x12\x0c\n\x04key1\x18\x02 \x01(\t\x12\x0c\n\x04key2\x18\x03 \x01(\t\x12\x0b\n\x03hom\x18\x04 \x01(\t\x12\x0c\n\x04loan\x18\x05 \x01(\x08"\xbe\x01\n\x07\x43\x44SBody\x12\'\n\x0clexical_info\x18\x01 \x03(\x0b\x32\x11.cdsl_spec.CDSLEx\x12#\n\x06senses\x18\x02 \x03(\x0b\x32\x13.cdsl_spec.CDSSense\x12*\n\x07sources\x18\x03 \x03(\x0b\x32\x19.cdsl_spec.CDSLiteraryRef\x12&\n\ncross_refs\x18\x04 \x03(\x0b\x32\x12.cdsl_spec.CDSXref\x12\x11\n\tetymology\x18\x05 \x01(\t"%\n\x06\x43\x44SLEx\x12\x0c\n\x04type\x18\x01 \x01(\t\x12\r\n\x05value\x18\x02 \x01(\t"\x80\x01\n\x08\x43\x44SSense\x12\x0e\n\x06number\x18\x01 \x01(\t\x12\x0c\n\x04text\x18\x02 \x01(\t\x12(\n\x08sanskrit\x18\x03 \x03(\x0b\x32\x16.cdsl_spec.CDSSanskrit\x12,\n\tcitations\x18\x04 \x03(\x0b\x32\x19.cdsl_spec.CDSLiteraryRef":\n\x0b\x43\x44SSanskrit\x12\x0c\n\x04slp1\x18\x01 \x01(\t\x12\x0c\n\x04root\x18\x02 \x01(\t\x12\x0f\n\x07is_root\x18\x03 \x01(\x08"L\n\x0e\x43\x44SLiteraryRef\x12\x14\n\x0c\x61\x62\x62reviation\x18\x01 \x01(\t\x12\x11\n\treference\x18\x02 \x01(\t\x12\x11\n\tfull_name\x18\x03 \x01(\t"@\n\x07\x43\x44SXref\x12\x0c\n\x04type\x18\x01 \x01(\t\x12\x12\n\ntarget_key\x18\x02 \x01(\t\x12\x13\n\x0btarget_lnum\x18\x03 \x01(\t"9\n\x07\x43\x44STail\x12\x0c\n\x04lnum\x18\x01 \x01(\t\x12\x10\n\x08page_col\x18\x02 \x01(\t\x12\x0e\n\x06mw_num\x18\x03 \x01(\t"m\n\x10SanskritEncoding\x12\x0c\n\x04iast\x18\x01 \x01(\t\x12\x12\n\ndevanagari\x18\x02 \x01(\t\x12\x0c\n\x04slp1\x18\x03 \x01(\t\x12\x10\n\x08velthuis\x18\x04 \x01(\t\x12\n\n\x02hk\x18\x05 \x01(\t\x12\x0b\n\x03ipa\x18\x06 \x01(\tb\x06proto3'
-)
+
+
+DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\x0f\x63\x64sl_spec.proto\x12\tcdsl_spec\"\xb5\x01\n\x08\x43\x44SEntry\x12\x0c\n\x04lnum\x18\x01 \x01(\t\x12\x0c\n\x04key1\x18\x02 \x01(\t\x12\x0c\n\x04key2\x18\x03 \x01(\t\x12\x0b\n\x03hom\x18\x04 \x01(\t\x12\x0c\n\x04\x64ict\x18\x05 \x01(\t\x12 \n\x04head\x18\x06 \x01(\x0b\x32\x12.cdsl_spec.CDSHead\x12 \n\x04\x62ody\x18\x07 \x01(\x0b\x32\x12.cdsl_spec.CDSBody\x12 \n\x04tail\x18\x08 \x01(\x0b\x32\x12.cdsl_spec.CDSTail\"M\n\x07\x43\x44SHead\x12\x0b\n\x03hc3\x18\x01 \x01(\t\x12\x0c\n\x04key1\x18\x02 \x01(\t\x12\x0c\n\x04key2\x18\x03 \x01(\t\x12\x0b\n\x03hom\x18\x04 \x01(\t\x12\x0c\n\x04loan\x18\x05 \x01(\x08\"\xbe\x01\n\x07\x43\x44SBody\x12\'\n\x0clexical_info\x18\x01 \x03(\x0b\x32\x11.cdsl_spec.CDSLEx\x12#\n\x06senses\x18\x02 \x03(\x0b\x32\x13.cdsl_spec.CDSSense\x12*\n\x07sources\x18\x03 \x03(\x0b\x32\x19.cdsl_spec.CDSLiteraryRef\x12&\n\ncross_refs\x18\x04 \x03(\x0b\x32\x12.cdsl_spec.CDSXref\x12\x11\n\tetymology\x18\x05 \x01(\t\"%\n\x06\x43\x44SLEx\x12\x0c\n\x04type\x18\x01 \x01(\t\x12\r\n\x05value\x18\x02 \x01(\t\"\x80\x01\n\x08\x43\x44SSense\x12\x0e\n\x06number\x18\x01 \x01(\t\x12\x0c\n\x04text\x18\x02 \x01(\t\x12(\n\x08sanskrit\x18\x03 \x03(\x0b\x32\x16.cdsl_spec.CDSSanskrit\x12,\n\tcitations\x18\x04 \x03(\x0b\x32\x19.cdsl_spec.CDSLiteraryRef\":\n\x0b\x43\x44SSanskrit\x12\x0c\n\x04slp1\x18\x01 \x01(\t\x12\x0c\n\x04root\x18\x02 \x01(\t\x12\x0f\n\x07is_root\x18\x03 \x01(\x08\"L\n\x0e\x43\x44SLiteraryRef\x12\x14\n\x0c\x61\x62\x62reviation\x18\x01 \x01(\t\x12\x11\n\treference\x18\x02 \x01(\t\x12\x11\n\tfull_name\x18\x03 \x01(\t\"@\n\x07\x43\x44SXref\x12\x0c\n\x04type\x18\x01 \x01(\t\x12\x12\n\ntarget_key\x18\x02 \x01(\t\x12\x13\n\x0btarget_lnum\x18\x03 \x01(\t\"9\n\x07\x43\x44STail\x12\x0c\n\x04lnum\x18\x01 \x01(\t\x12\x10\n\x08page_col\x18\x02 \x01(\t\x12\x0e\n\x06mw_num\x18\x03 \x01(\t\"m\n\x10SanskritEncoding\x12\x0c\n\x04iast\x18\x01 \x01(\t\x12\x12\n\ndevanagari\x18\x02 \x01(\t\x12\x0c\n\x04slp1\x18\x03 \x01(\t\x12\x10\n\x08velthuis\x18\x04 \x01(\t\x12\n\n\x02hk\x18\x05 \x01(\t\x12\x0b\n\x03ipa\x18\x06 \x01(\tb\x06proto3')
 
 _globals = globals()
 _builder.BuildMessageAndEnumDescriptors(DESCRIPTOR, _globals)
-_builder.BuildTopDescriptorsAndMessages(DESCRIPTOR, "cdsl_spec_pb2", _globals)
+_builder.BuildTopDescriptorsAndMessages(DESCRIPTOR, 'cdsl_spec_pb2', _globals)
 if not _descriptor._USE_C_DESCRIPTORS:
-    DESCRIPTOR._loaded_options = None
-    _globals["_CDSENTRY"]._serialized_start = 31
-    _globals["_CDSENTRY"]._serialized_end = 212
-    _globals["_CDSHEAD"]._serialized_start = 214
-    _globals["_CDSHEAD"]._serialized_end = 291
-    _globals["_CDSBODY"]._serialized_start = 294
-    _globals["_CDSBODY"]._serialized_end = 484
-    _globals["_CDSLEX"]._serialized_start = 486
-    _globals["_CDSLEX"]._serialized_end = 523
-    _globals["_CDSSENSE"]._serialized_start = 526
-    _globals["_CDSSENSE"]._serialized_end = 654
-    _globals["_CDSSANSKRIT"]._serialized_start = 656
-    _globals["_CDSSANSKRIT"]._serialized_end = 714
-    _globals["_CDSLITERARYREF"]._serialized_start = 716
-    _globals["_CDSLITERARYREF"]._serialized_end = 792
-    _globals["_CDSXREF"]._serialized_start = 794
-    _globals["_CDSXREF"]._serialized_end = 858
-    _globals["_CDSTAIL"]._serialized_start = 860
-    _globals["_CDSTAIL"]._serialized_end = 917
-    _globals["_SANSKRITENCODING"]._serialized_start = 919
-    _globals["_SANSKRITENCODING"]._serialized_end = 1028
+  DESCRIPTOR._loaded_options = None
+  _globals['_CDSENTRY']._serialized_start=31
+  _globals['_CDSENTRY']._serialized_end=212
+  _globals['_CDSHEAD']._serialized_start=214
+  _globals['_CDSHEAD']._serialized_end=291
+  _globals['_CDSBODY']._serialized_start=294
+  _globals['_CDSBODY']._serialized_end=484
+  _globals['_CDSLEX']._serialized_start=486
+  _globals['_CDSLEX']._serialized_end=523
+  _globals['_CDSSENSE']._serialized_start=526
+  _globals['_CDSSENSE']._serialized_end=654
+  _globals['_CDSSANSKRIT']._serialized_start=656
+  _globals['_CDSSANSKRIT']._serialized_end=714
+  _globals['_CDSLITERARYREF']._serialized_start=716
+  _globals['_CDSLITERARYREF']._serialized_end=792
+  _globals['_CDSXREF']._serialized_start=794
+  _globals['_CDSXREF']._serialized_end=858
+  _globals['_CDSTAIL']._serialized_start=860
+  _globals['_CDSTAIL']._serialized_end=917
+  _globals['_SANSKRITENCODING']._serialized_start=919
+  _globals['_SANSKRITENCODING']._serialized_end=1028
 # @@protoc_insertion_point(module_scope)
